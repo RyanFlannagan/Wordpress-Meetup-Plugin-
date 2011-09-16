@@ -21,12 +21,10 @@ class WP_Meetup {
     
     function WP_Meetup() {
         
-        
-        
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
         $this->options = array();
-        $this->options['api_key'] = get_option('wp_meetup_api_key') ? get_option('wp_meetup_api_key') : FALSE;
-        $this->options['group_url_name'] = get_option('wp_meetup_group_url_name') ? get_option('wp_meetup_group_url_name') : FALSE;
+        $this->options['api_key'] = get_option('wp_meetup_api_key', FALSE);
+        $this->options['group_url_name'] = get_option('wp_meetup_group_url_name', FALSE);
         $this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
         
         add_action('admin_menu', array($this, 'admin_menu'));
