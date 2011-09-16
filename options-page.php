@@ -10,22 +10,32 @@
 
 <?php if ($has_api_key): ?>
 
-
+<h3>Group Information</h3>
 <pre>
 <?php
-        $this->mu_api->setQuery( array('group_urlname' => $this->options['group_url_name']) ); //Replace with a real group's URL name - it's what comes after the www.meetup.com/
-        set_time_limit(0);
-        $this->mu_api->setPageSize(200);
-        $response = $this->mu_api->getResponse();
+
         //var_dump($response);
 ?>
 </pre>
 
-<h3><?php echo $response->results[0]->name; ?></h3>
+<h4>Group name: <?php echo $group->name; ?></h4>
 <p>
-    <?php echo $response->results[0]->description; ?>
+    <?php echo $group->description; ?>
 </p>
 
+<?php endif; ?>
+
+<?php if (count($events)): ?>
+<h3>Events</h3>
+<pre>
+<?php //var_dump($events); ?>
+</pre>
+<?php foreach($events as $event): ?>
+
+<h4><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></h4>
+<p>Time: <?php echo date('D M j, Y, g:i A', $event->time); ?>, <?php echo $event->yes_rsvp_count; ?> going</p>
+
+<?php endforeach; ?>
 <?php endif; ?>
 
 <h3>API Key</h3>

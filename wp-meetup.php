@@ -10,6 +10,7 @@ Author URI: http://nuancedmedia.com/
 ?>
 
 <?php
+include("meetup_api/MeetupAPIBase.php");
 $meetup = new WP_Meetup();
 
 class WP_Meetup {
@@ -31,8 +32,8 @@ class WP_Meetup {
         
         //var_dump($this->options);
         
-        include("meetup_api/MeetupAPIBase.php");
-        $this->mu_api = new MeetupAPIBase($this->options['api_key'], 'groups');
+        
+        //$this->mu_api = new MeetupAPIBase($this->options['api_key'], 'groups');
         
         
         add_action('admin_menu', array($this, 'admin_menu'));
@@ -58,6 +59,33 @@ class WP_Meetup {
         }
     }
     
+    function get_events() {
+        
+        $this->mu_api = new MeetupAPIBase($this->options['api_key'], '2/events');
+        $this->mu_api->setQuery( array(
+            'group_urlname' => $this->options['group_url_name'],
+            'time' => '0,1m'
+        )); 
+        set_time_limit(0);
+        $this->mu_api->setPageSize(200);
+        $response = $this->mu_api->getResponse();
+        
+        return $response->results;
+        
+    }
+    
+    function get_group() {
+        
+        $this->mu_api = new MeetupAPIBase($this->options['api_key'], 'groups');
+        $this->mu_api->setQuery( array('group_urlname' => $this->options['group_url_name']) ); //Replace with a real group's URL name - it's what comes after the www.meetup.com/
+        set_time_limit(0);
+        $this->mu_api->setPageSize(200);
+        $group_info = $this->mu_api->getResponse();
+        
+        return $group_info->results[0];
+        
+    }
+    
     function admin_options() {
         if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
@@ -66,6 +94,9 @@ class WP_Meetup {
         $data = array();
         $data['has_api_key'] = !empty($this->options['api_key']);
         $data['group_url'] = !empty($this->options['group_url_name']) ? "http://www.meetup.com/" . $this->options['group_url_name'] : FALSE;
+        
+        $data['group'] = $this->get_group();
+        $data['events'] = $this->get_events();
         
         echo $this->get_include_contents($this->dir . "options-page.php", $data);
         
