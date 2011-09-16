@@ -7,9 +7,7 @@ Version: 1.0
 Author: Nuanced Media
 Author URI: http://nuancedmedia.com/
 */
-?>
 
-<?php
 include("meetup_api/MeetupAPIBase.php");
 
 $meetup = new WP_Meetup();
@@ -23,7 +21,7 @@ class WP_Meetup {
     
     function WP_Meetup() {
         
-        if (!empty($_POST)) $this->handle_post_data();
+        
         
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
         $this->options = array();
@@ -36,22 +34,23 @@ class WP_Meetup {
     }
     
     function admin_menu() {
+	if (!empty($_POST)) $this->handle_post_data();
         add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($this, 'admin_options'));
     }
     
     function handle_post_data() {
+        
         if (array_key_exists('api_key', $_POST)) {
             update_option('wp_meetup_api_key', $_POST['api_key']);
-            $this->options['api_key'] = $_POST['api_key'];
         }
         
         
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = str_replace("http://www.meetup.com/", "", $_POST['group_url']);
-            $parsed_name = substr($parsed_name, 0, strpos($parsed_name, "/"));
+            $parsed_name = strstr($parsed_name, "/") ? substr($parsed_name, 0, strpos($parsed_name, "/")) : $parsed_name;
             update_option('wp_meetup_group_url_name', $parsed_name);
-            $this->options['group_url_name'] = $parsed_name;
         }
+        
     }
     
     function get_events() {

@@ -8,35 +8,7 @@
     Options for Meetup.com integration by <a href="http://nuancedmedia.com/">Nuanced Media</a>
 </p>
 
-<?php if ($has_api_key): ?>
 
-<h3>Group Information</h3>
-<pre>
-<?php
-
-        //var_dump($response);
-?>
-</pre>
-
-<h4>Group name: <?php echo $group->name; ?></h4>
-<p>
-    <?php echo $group->description; ?>
-</p>
-
-<?php endif; ?>
-
-<?php if (count($events)): ?>
-<h3>Events</h3>
-<pre>
-<?php //var_dump($events); ?>
-</pre>
-<?php foreach($events as $event): ?>
-
-<h4><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></h4>
-<p>Time: <?php echo date('D M j, Y, g:i A', $event->time); ?>, <?php echo $event->yes_rsvp_count; ?> going</p>
-
-<?php endforeach; ?>
-<?php endif; ?>
 
 <h3>API Key</h3>
 <p>
@@ -66,3 +38,33 @@
 </p>
 </form>
 
+
+<?php if ($has_api_key): ?>
+
+<h3>Group Information</h3>
+<pre>
+<?php
+
+        //var_dump($response);
+?>
+</pre>
+
+<h4>Group name: <?php echo $group->name; ?></h4>
+<p>
+    <?php echo $group->description; ?>
+</p>
+
+<?php endif; ?>
+
+<?php if (count($events)): ?>
+<h3>Events</h3>
+<pre>
+<?php //var_dump($events); ?>
+</pre>
+<?php foreach($events as $event): ?>
+
+<h4><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></h4>
+<p>Time: <?php echo date('D M j, Y, g:i A', $event->time); ?>, <?php echo $event->yes_rsvp_count; ?> going</p>
+
+<?php endforeach; ?>
+<?php endif; ?>
