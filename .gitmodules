@@ -1,0 +1,3 @@
+[submodule "meetup_api"]
+	path = meetup_api
+	url = https://github.com/wizonesolutions/meetup_api
