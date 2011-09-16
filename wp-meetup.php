@@ -11,6 +11,7 @@ Author URI: http://nuancedmedia.com/
 
 <?php
 include("meetup_api/MeetupAPIBase.php");
+
 $meetup = new WP_Meetup();
 
 class WP_Meetup {
@@ -29,12 +30,6 @@ class WP_Meetup {
         $this->options['api_key'] = get_option('wp_meetup_api_key') ? get_option('wp_meetup_api_key') : FALSE;
         $this->options['group_url_name'] = get_option('wp_meetup_group_url_name') ? get_option('wp_meetup_group_url_name') : FALSE;
         $this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
-        
-        //var_dump($this->options);
-        
-        
-        //$this->mu_api = new MeetupAPIBase($this->options['api_key'], 'groups');
-        
         
         add_action('admin_menu', array($this, 'admin_menu'));
         
@@ -83,6 +78,12 @@ class WP_Meetup {
         $group_info = $this->mu_api->getResponse();
         
         return $group_info->results[0];
+        
+    }
+    
+    function add_event_posts() {
+        
+        
         
     }
     
