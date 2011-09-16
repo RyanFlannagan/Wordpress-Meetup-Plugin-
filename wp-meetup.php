@@ -18,21 +18,23 @@ class WP_Meetup {
     private $options;
     private $admin_page_url;
     private $mu_api;
+    private $feedback = array('error' => array(), 'message' => array(), 'success' => array());
     
     function WP_Meetup() {
-        
+	
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
         $this->options = array();
         $this->options['api_key'] = get_option('wp_meetup_api_key', FALSE);
         $this->options['group_url_name'] = get_option('wp_meetup_group_url_name', FALSE);
         $this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
+	
+	if (!empty($_POST)) $this->handle_post_data();
         
         add_action('admin_menu', array($this, 'admin_menu'));
         
     }
     
     function admin_menu() {
-	if (!empty($_POST)) $this->handle_post_data();
         add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($this, 'admin_options'));
     }
     
@@ -46,7 +48,13 @@ class WP_Meetup {
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = str_replace("http://www.meetup.com/", "", $_POST['group_url']);
             $parsed_name = strstr($parsed_name, "/") ? substr($parsed_name, 0, strpos($parsed_name, "/")) : $parsed_name;
-            update_option('wp_meetup_group_url_name', $parsed_name);
+	    
+	    $this->options['group_url_name'] = $parsed_name;
+	    if ($this->get_group()) {
+		update_option('wp_meetup_group_url_name', $parsed_name);
+	    } else {
+		$this->feedback['error'][] = "The Group URL you entered isn't valid.";
+	    }
         }
         
     }
@@ -74,7 +82,7 @@ class WP_Meetup {
         $this->mu_api->setPageSize(200);
         $group_info = $this->mu_api->getResponse();
         
-        return $group_info->results[0];
+        return (count($group_info->results)) ? $group_info->results[0] : FALSE;
         
     }
     

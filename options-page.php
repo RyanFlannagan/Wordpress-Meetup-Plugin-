@@ -10,6 +10,16 @@
 
 
 
+<?php foreach ($this->feedback as $message_type => $messages): ?>
+
+<?php foreach ($messages as $message): ?>
+<p class="<?php echo $message_type; ?>"><?php echo $message; ?></p>
+<?php endforeach; ?>
+
+<?php endforeach; ?>
+
+
+
 <h3>API Key</h3>
 <p>
     To use WP Meetup, you need to provide your <a href="http://www.meetup.com/meetup_api/key/">Meetup.com API key</a>.  Just paste that key here:
