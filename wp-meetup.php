@@ -49,8 +49,7 @@ class WP_Meetup {
             $parsed_name = str_replace("http://www.meetup.com/", "", $_POST['group_url']);
             $parsed_name = strstr($parsed_name, "/") ? substr($parsed_name, 0, strpos($parsed_name, "/")) : $parsed_name;
 	    
-	    $this->options['group_url_name'] = $parsed_name;
-	    if ($this->get_group()) {
+	    if ($this->get_group($parsed_name)) {
 		update_option('wp_meetup_group_url_name', $parsed_name);
 	    } else {
 		$this->feedback['error'][] = "The Group URL you entered isn't valid.";
@@ -74,10 +73,13 @@ class WP_Meetup {
         
     }
     
-    function get_group() {
+    function get_group($group_url_name = FALSE) {
         
+	if (!$group_url_name)
+	    $group_url_name = $this->options['group_url_name'];
+	
         $this->mu_api = new MeetupAPIBase($this->options['api_key'], 'groups');
-        $this->mu_api->setQuery( array('group_urlname' => $this->options['group_url_name']) ); //Replace with a real group's URL name - it's what comes after the www.meetup.com/
+        $this->mu_api->setQuery( array('group_urlname' => $group_url_name) ); //Replace with a real group's URL name - it's what comes after the www.meetup.com/
         set_time_limit(0);
         $this->mu_api->setPageSize(200);
         $group_info = $this->mu_api->getResponse();
