@@ -9,6 +9,7 @@ Author URI: http://nuancedmedia.com/
 */
 
 include("meetup_api/MeetupAPIBase.php");
+include("event-posts.php");
 
 $meetup = new WP_Meetup();
 
@@ -19,8 +20,9 @@ class WP_Meetup {
     private $admin_page_url;
     private $mu_api;
     private $feedback = array('error' => array(), 'message' => array(), 'success' => array());
-    private $category_id;
-    private $option_map; 
+    public $category_id;
+    private $option_map;
+    private $event_posts;
     
     function WP_Meetup() {
 	
@@ -32,6 +34,8 @@ class WP_Meetup {
 	    'category' => array('wp_meetup_category', 'events'),
 	    'publish_buffer' => array('wp_meetup_publish_buffer', '2 weeks')
 	);
+	$this->event_posts = new WP_Meetup_Event_Posts();
+	$this->event_posts->parent = &$this;
 	
 	$this->get_all_options();
 	
@@ -142,7 +146,7 @@ class WP_Meetup {
 	if (array_key_exists('publish_buffer', $_POST) && $_POST['category'] != $this->get_option('publish_buffer')) {
 	    $this->set_option('publish_buffer', $_POST['publish_buffer']);
 	    
-	    $this->remove_event_posts();
+	    $this->event_posts->remove_all();
 
 	    $this->feedback['success'][] = "Successfullly updated your publishing buffer.";
 	}
@@ -195,77 +199,6 @@ class WP_Meetup {
         
     }
     
-    function add_event_posts($events) {
-	
-	
-	
-	$existing_posts = $this->get_event_posts(TRUE);
-	$added_post_count = 0;
-	
-	
-	//$this->pr($existing_posts);
-	//$this->pr($events);
-	
-	foreach ($events as $event) {
-	    
-	    if (!in_array($event->id, $existing_posts)) {
-		$added_post_count++;
-		$post_status = strtotime("+" . $this->get_option('publish_buffer')) >=  $event->time ? 'publish' : 'future';
-
-		$post = array(
-		    'post_category' => array($this->category_id),
-		    'post_content' => $event->description,
-		    'post_title' => $event->name,
-		    'post_status' => $post_status,
-		    'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $this->get_option('publish_buffer'), $event->time)) 
-		);
-
-		$post_id = wp_insert_post($post);
-		add_post_meta($post_id, 'wp_meetup_id', $event->id);
-		add_post_meta($post_id, 'wp_meetup_time', $event->time);
-		add_post_meta($post_id, 'wp_meetup_rsvp_count', $event->yes_rsvp_count);
-	    }
-	    
-	}
-	
-	if ($added_post_count > 0)
-	    $this->feedback['success'][] = "Successfullly posted {$added_post_count} new events";
-	
-	//$this->pr($posts);
-	
-	//return $posts;
-    
-        
-    }
-    
-    function remove_event_posts() {
-	//$this->pr("Time to update post dates");
-	$posts = $this->get_event_posts();
-	
-	foreach ($posts as $post) {
-	    wp_delete_post($post->ID);
-	}
-	
-    }
-    
-    function get_event_posts($id_only = FALSE) {
-	$posts = array();
-	$the_query = new WP_Query(array(
-	    'cat' => $this->category_id,
-	    'posts_per_page' => -1
-	));
-	if ($id_only) {
-	    while ($the_query->have_posts()) : $the_query->the_post();
-		$posts[] = get_post_meta(get_the_ID(), 'wp_meetup_id', TRUE);
-	    endwhile;
-	} else {
-	    $posts = $the_query->posts;
-	}
-	wp_reset_query();
-	
-	return $posts;
-    }
-    
     function admin_options() {
 	
         if (!current_user_can('manage_options'))  {
@@ -278,8 +211,8 @@ class WP_Meetup {
         
 	$data['group'] = $this->get_group();
 	if ($events = $this->get_events()) {
-	    $this->add_event_posts($events);
-	    $data['events'] = $this->get_event_posts();
+	    $this->event_posts->add($events);
+	    $data['events'] = $this->event_posts->get_all();
 	}
         
         echo $this->get_include_contents($this->dir . "options-page.php", $data);
