@@ -1,7 +1,6 @@
 <div class="wrap">
 <?php
-    //var_dump($this->admin_page_url);
-    //$this->test();
+    //$this->pr($this->options);
     
 ?>
 <h2>WP Meetup Options</h2>
@@ -14,7 +13,7 @@
 <?php foreach ($this->feedback as $message_type => $messages): ?>
 
 <?php foreach ($messages as $message): ?>
-<p class="<?php echo $message_type; ?>"><?php echo $message; ?></p>
+<div class="<?php echo $message_type; ?>"><?php echo $message; ?></div>
 <?php endforeach; ?>
 
 <?php endforeach; ?>
@@ -71,7 +70,7 @@
 
 <p>
     <label>Meetup.com API Key: </label>
-    <input type="text" name="api_key" value="<?php echo $this->options['api_key']; ?>" />
+    <input type="text" name="api_key" value="<?php echo $this->get_option('api_key'); ?>" />
 </p>
 
 
@@ -101,7 +100,7 @@ $date_select .= "</select>";
 
 <h3>Event-to-Post Options</h3>
 <p>
-    <label>Categorize each event post as <input type="text" name="category" value="<?php echo $this->options['category']; ?>" /></label>
+    <label>Categorize each event post as <input type="text" name="category" value="<?php echo $this->get_option('category'); ?>" /></label>
 </p>
 <p>
     <label>Publish event posts <?php echo $date_select; ?> before the event date.</label>
