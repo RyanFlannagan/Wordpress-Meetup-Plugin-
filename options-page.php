@@ -1,6 +1,6 @@
 <div class="wrap">
 <?php
-    //$this->pr($this->options);
+    $this->pr($this->options);
     
 ?>
 <h2>WP Meetup Options</h2>
@@ -87,12 +87,12 @@
 <?php
 $date_select = "<select name=\"publish_buffer\">";
 $options = array(
-    '1 week' => '1w',
-    '2 weeks' => '2w',
-    '1 month' => '1m'
+    '1 week' => '1 week',
+    '2 weeks' => '2 weeks',
+    '1 month' => '1 month'
 );
 foreach ($options as $label => $value) {
-    $date_select .= "<option value=\"{$value}\">$label</option>";
+    $date_select .= "<option value=\"{$value}\"" . ($this->get_option('publish_buffer') == $value ? ' selected="selected"' : "") . ">$label</option>";
 }
 $date_select .= "</select>";
 ?>

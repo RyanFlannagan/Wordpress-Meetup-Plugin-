@@ -29,7 +29,8 @@ class WP_Meetup {
 	$this->option_map = array(
 	    'api_key' => 'wp_meetup_api_key',
 	    'group_url_name' => 'wp_meetup_group_url_name',
-	    'category' => array('wp_meetup_category', 'events')
+	    'category' => array('wp_meetup_category', 'events'),
+	    'publish_buffer' => array('wp_meetup_publish_buffer', '1 week')
 	);
 	
 	$this->get_all_options();
@@ -75,7 +76,6 @@ class WP_Meetup {
 	}
 	
 	if ($option_key == 'group_url_name') {
-	    //$this->pr($option_key, $value);
 	    if (!$this->get_group($value)) return FALSE;
 	}
 	
@@ -135,6 +135,12 @@ class WP_Meetup {
 	    $this->feedback['success'][] = "Successfullly updated your event category.";
 	}
 	
+	if (array_key_exists('publish_buffer', $_POST) && $_POST['category'] != $this->get_option('publish_buffer')) {
+	    $this->set_option('publish_buffer', $_POST['publish_buffer']);
+
+	    $this->feedback['success'][] = "Successfullly updated your publishing buffer.";
+	}
+	
     }
     
     function admin_menu() {
@@ -178,8 +184,6 @@ class WP_Meetup {
         $this->mu_api->setPageSize(200);
         $group_info = $this->mu_api->getResponse();
 	
-	//$this->pr($group_info);
-	
         return (count($group_info->results) > 0) ? $group_info->results[0] : FALSE;
         
     }
@@ -199,14 +203,18 @@ class WP_Meetup {
 	    
 	    if (!in_array($event->id, $existing_posts)) {
 		$added_post_count++;
+		$post_status = strtotime("+" . $this->get_option('publish_buffer')) >=  $event->time ? 'publish' : 'future';
+		//$this->pr(strtotime("+" . $this->get_option('publish_buffer')), $event->time,  $post_status, " ");
 		$post = array(
 		    'post_category' => array($this->category_id),
 		    'post_content' => $event->description,
 		    'post_title' => $event->name,
-		    'post_status' => 'publish'
+		    'post_status' => $post_status,
+		    'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $this->get_option('publish_buffer'), $event->time)) 
 		);
+		//$this->pr($post);
 		//date('d M Y H:i:s', strtotime('+1 month', strtotime('Thu Mar 31 19:50:41 IST 2011')));
-		
+		//Y-m-d H:i:s
 		$post_id = wp_insert_post($post);
 		add_post_meta($post_id, 'wp_meetup_id', $event->id);
 		add_post_meta($post_id, 'wp_meetup_time', $event->time);
