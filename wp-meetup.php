@@ -26,11 +26,11 @@ class WP_Meetup {
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
         $this->options['api_key'] = get_option('wp_meetup_api_key', FALSE);
         $this->options['group_url_name'] = get_option('wp_meetup_group_url_name', FALSE);
+	$this->options['category'] = get_option('wp_meetup_category', 'events');
         $this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
 	
-	$category = "meetup";
-	if (!$this->category_id = get_cat_ID($category)) {
-	    $this->category_id = wp_create_category( $category );
+	if (!$this->category_id = get_cat_ID($this->options['category'])) {
+	    $this->category_id = wp_insert_term($this->options['category'], 'category');
 	}
 	
 	if (!empty($_POST)) $this->handle_post_data();
@@ -55,7 +55,6 @@ class WP_Meetup {
 	    }*/
         }
         
-        
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = str_replace("http://www.meetup.com/", "", $_POST['group_url']);
             $parsed_name = strstr($parsed_name, "/") ? substr($parsed_name, 0, strpos($parsed_name, "/")) : $parsed_name;
@@ -69,6 +68,16 @@ class WP_Meetup {
 	    }
         }
         
+	if (array_key_exists('category', $_POST)) {
+	    //change_event_category();
+	    update_option('wp_meetup_category', $_POST['category']);
+	    $this->options['category'] =  $_POST['category'];
+	    if (!$this->category_id = get_cat_ID($this->options['category'])) {
+		$this->category_id = wp_insert_term($this->options['category'], 'category');
+	    }
+	    $this->feedback['success'][] = "Successfullly updated your event category.";
+	}
+	
     }
     
     function get_events($start = 0, $end = "1m") {
@@ -119,6 +128,7 @@ class WP_Meetup {
 	
 	
 	$existing_posts = $this->get_event_posts(TRUE);
+	$added_post_count = 0;
 	
 	
 	//$this->pr($existing_posts);
@@ -127,12 +137,14 @@ class WP_Meetup {
 	foreach ($events as $event) {
 	    
 	    if (!in_array($event->id, $existing_posts)) {
+		$added_post_count++;
 		$post = array(
 		    'post_category' => array($this->category_id),
 		    'post_content' => $event->description,
 		    'post_title' => $event->name,
 		    'post_status' => 'publish'
 		);
+		//date('d M Y H:i:s', strtotime('+1 month', strtotime('Thu Mar 31 19:50:41 IST 2011')));
 		
 		$post_id = wp_insert_post($post);
 		add_post_meta($post_id, 'wp_meetup_id', $event->id);
@@ -141,6 +153,9 @@ class WP_Meetup {
 	    }
 	    
 	}
+	
+	if ($added_post_count > 0)
+	    $this->feedback['success'][] = "Successfullly posted {$added_post_count} new events";
 	
 	//$this->pr($posts);
 	
