@@ -49,7 +49,7 @@
 <tr>
     <td><a href="<?php echo get_permalink($event->ID); ?>"><?php echo $event->post_title; ?></a></td>
     <td><?php echo date('D M j, Y, g:i A', get_post_meta($event->ID, 'wp_meetup_time', TRUE)); ?></td>
-    <td><?php echo date('D M j, Y, g:i A', strtotime($event->post_date)); ?></td>
+    <td><?php echo date('Y/m/d', strtotime($event->post_date)); ?><br /><?php echo ($event->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
     <td><?php echo get_post_meta($event->ID, 'wp_meetup_rsvp_count', TRUE); ?> going</td>
 </tr>
 <?php endforeach; ?>
@@ -70,7 +70,7 @@
 
 <p>
     <label>Meetup.com API Key: </label>
-    <input type="text" name="api_key" value="<?php echo $this->get_option('api_key'); ?>" />
+    <input type="text" name="api_key" size="30" value="<?php echo $this->get_option('api_key'); ?>" />
 </p>
 
 
@@ -81,7 +81,7 @@
 </p>
 <p>
     <label>Meetup.com Group URL: </label>
-    <input type="text" name="group_url" value="<?php echo $group_url; ?>" />
+    <input type="text" name="group_url" size="30" value="<?php echo $group_url; ?>" />
 </p>
 
 <?php

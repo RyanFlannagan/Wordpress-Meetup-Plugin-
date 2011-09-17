@@ -30,12 +30,12 @@ class WP_Meetup {
 	    'api_key' => 'wp_meetup_api_key',
 	    'group_url_name' => 'wp_meetup_group_url_name',
 	    'category' => array('wp_meetup_category', 'events'),
-	    'publish_buffer' => array('wp_meetup_publish_buffer', '1 week')
+	    'publish_buffer' => array('wp_meetup_publish_buffer', '2 weeks')
 	);
 	
 	$this->get_all_options();
 	
-	if (!empty($_POST)) $this->handle_post_data();
+	
         
         add_action('admin_menu', array($this, 'admin_menu'));
         
@@ -83,6 +83,10 @@ class WP_Meetup {
 	    if (!$this->category_id = get_cat_ID($this->options['category'])) {
 		$this->category_id = wp_insert_term($this->options['category'], 'category');
 	    }
+	}
+	
+	if ($option_key == 'publish_buffer') {
+	    
 	}
 	
 	$this->options[$option_key] = $value;
@@ -137,6 +141,8 @@ class WP_Meetup {
 	
 	if (array_key_exists('publish_buffer', $_POST) && $_POST['category'] != $this->get_option('publish_buffer')) {
 	    $this->set_option('publish_buffer', $_POST['publish_buffer']);
+	    
+	    $this->remove_event_posts();
 
 	    $this->feedback['success'][] = "Successfullly updated your publishing buffer.";
 	}
@@ -144,6 +150,7 @@ class WP_Meetup {
     }
     
     function admin_menu() {
+	if (!empty($_POST)) $this->handle_post_data();
         add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($this, 'admin_options'));
     }
     
@@ -229,6 +236,16 @@ class WP_Meetup {
 	//return $posts;
     
         
+    }
+    
+    function remove_event_posts() {
+	//$this->pr("Time to update post dates");
+	$posts = $this->get_event_posts();
+	
+	foreach ($posts as $post) {
+	    wp_delete_post($post->ID);
+	}
+	
     }
     
     function get_event_posts($id_only = FALSE) {
