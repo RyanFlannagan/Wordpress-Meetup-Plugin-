@@ -10,6 +10,7 @@ Author URI: http://nuancedmedia.com/
 
 include("meetup_api/MeetupAPIBase.php");
 include("event-posts.php");
+include("events.php");
 
 $meetup = new WP_Meetup();
 
@@ -18,11 +19,15 @@ class WP_Meetup {
     private $dir;
     private $options = array();
     private $admin_page_url;
-    private $mu_api;
     private $feedback = array('error' => array(), 'message' => array(), 'success' => array());
-    public $category_id;
     private $option_map;
+    private $mu_api;
     private $event_posts;
+    private $events;
+    private $table_prefix;
+    
+    public $category_id;
+    
     
     function WP_Meetup() {
 	
@@ -34,15 +39,33 @@ class WP_Meetup {
 	    'category' => array('wp_meetup_category', 'events'),
 	    'publish_buffer' => array('wp_meetup_publish_buffer', '2 weeks')
 	);
+	global $wpdb;
+	$this->table_prefix = $wpdb->prefix . "wpmeetup_";
+	
 	$this->event_posts = new WP_Meetup_Event_Posts();
 	$this->event_posts->parent = &$this;
+	
+	$this->events = new WP_Meetup_Events();
+	$this->events->parent = &$this;
+	$this->events->table_name = $this->table_prefix . "events";
 	
 	$this->get_all_options();
 	
 	
-        
+        register_activation_hook( __FILE__, array($this, 'activate') );
+	register_deactivation_hook( __FILE__, array($this, 'deactivate') );
         add_action('admin_menu', array($this, 'admin_menu'));
         
+    }
+    
+    function activate() {
+	//$this->pr("Activated!");
+	$this->events->create_table();
+    }
+    
+    function deactivate() {
+	//$this->pr("Dectivated!");
+	$this->events->drop_table();
     }
     
     function get_option($option_key) {
@@ -190,7 +213,7 @@ class WP_Meetup {
 	//$this->pr($group_url_name, $api_key);
 	
         $this->mu_api = new MeetupAPIBase($api_key, 'groups');
-        $this->mu_api->setQuery( array('group_urlname' => $group_url_name) ); //Replace with a real group's URL name - it's what comes after the www.meetup.com/
+        $this->mu_api->setQuery( array('group_urlname' => $group_url_name) ); 
         set_time_limit(0);
         $this->mu_api->setPageSize(200);
         $group_info = $this->mu_api->getResponse();
@@ -211,8 +234,10 @@ class WP_Meetup {
         
 	$data['group'] = $this->get_group();
 	if ($events = $this->get_events()) {
+	    $this->events->save_all($events);
+	    $data['events'] = $events;
 	    $this->event_posts->add($events);
-	    $data['events'] = $this->event_posts->get_all();
+	    $data['event_posts'] = $this->event_posts->get_all();
 	}
         
         echo $this->get_include_contents($this->dir . "options-page.php", $data);

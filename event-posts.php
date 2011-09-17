@@ -2,7 +2,6 @@
 
 class WP_Meetup_Event_Posts {
     
-    //public $category_id;
     public $parent;
 
     
