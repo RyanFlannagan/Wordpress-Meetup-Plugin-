@@ -93,6 +93,12 @@ class WP_Meetup_Events {
         $this->wpdb->query($sql);
     }
     
+    function clear_post_ids() {
+        $sql = "UPDATE `{$this->table_name}` SET `post_id` = NULL";
+        
+        $this->wpdb->query($sql);
+    }
+    
     
 
 }

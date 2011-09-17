@@ -169,11 +169,16 @@ class WP_Meetup {
 	if (array_key_exists('publish_buffer', $_POST) && $_POST['category'] != $this->get_option('publish_buffer')) {
 	    $this->set_option('publish_buffer', $_POST['publish_buffer']);
 	    
-	    $this->event_posts->remove_all();
+	    $this->remove_all_event_posts();
 
 	    $this->feedback['success'][] = "Successfullly updated your publishing buffer.";
 	}
 	
+    }
+    
+    function remove_all_event_posts() {
+	$this->event_posts->remove_all();
+	$this->events->clear_post_ids();
     }
     
     function admin_menu() {
@@ -237,9 +242,11 @@ class WP_Meetup {
 	if ($events = $this->get_events()) {
 	    
 	    $this->events->save_all($events);
-	    $data['events'] = $this->events->get_all();
 	    
+	    $data['events'] = $this->events->get_all();
 	    $this->add_event_posts($data['events']);
+	    
+	    $data['events'] = $this->events->get_all();
 	    //$data['event_posts'] = $this->event_posts->get_all();
 	}
         
