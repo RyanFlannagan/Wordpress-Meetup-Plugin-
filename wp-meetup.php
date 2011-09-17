@@ -19,6 +19,7 @@ class WP_Meetup {
     private $admin_page_url;
     private $mu_api;
     private $feedback = array('error' => array(), 'message' => array(), 'success' => array());
+    private $category_id;
     
     function WP_Meetup() {
 	
@@ -26,6 +27,11 @@ class WP_Meetup {
         $this->options['api_key'] = get_option('wp_meetup_api_key', FALSE);
         $this->options['group_url_name'] = get_option('wp_meetup_group_url_name', FALSE);
         $this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
+	
+	$category = "meetup";
+	if (!$this->category_id = get_cat_ID($category)) {
+	    $this->category_id = wp_create_category( $category );
+	}
 	
 	if (!empty($_POST)) $this->handle_post_data();
         
@@ -65,7 +71,7 @@ class WP_Meetup {
         
     }
     
-    function get_events() {
+    function get_events($start = 0, $end = "1m") {
         
 	if (!$this->options['group_url_name'] || !$this->options['api_key'])
 	    return FALSE;
@@ -73,7 +79,7 @@ class WP_Meetup {
         $this->mu_api = new MeetupAPIBase($this->options['api_key'], '2/events');
         $this->mu_api->setQuery( array(
             'group_urlname' => $this->options['group_url_name'],
-            'time' => '0,1m'
+            'time' => $start . "," . $end
         )); 
         set_time_limit(0);
         $this->mu_api->setPageSize(200);
@@ -108,13 +114,61 @@ class WP_Meetup {
         
     }
     
-    function add_event_posts($start = 0, $end = "1m") {
-        
-        
+    function add_event_posts($events) {
+	
+	
+	
+	$existing_posts = $this->get_event_posts(TRUE);
+	
+	
+	//$this->pr($existing_posts);
+	//$this->pr($events);
+	
+	foreach ($events as $event) {
+	    
+	    if (!in_array($event->id, $existing_posts)) {
+		$post = array(
+		    'post_category' => array($this->category_id),
+		    'post_content' => $event->description,
+		    'post_title' => $event->name,
+		    'post_status' => 'publish'
+		);
+		
+		$post_id = wp_insert_post($post);
+		add_post_meta($post_id, 'wp_meetup_id', $event->id);
+		add_post_meta($post_id, 'wp_meetup_time', $event->time);
+		add_post_meta($post_id, 'wp_meetup_rsvp_count', $event->yes_rsvp_count);
+	    }
+	    
+	}
+	
+	//$this->pr($posts);
+	
+	//return $posts;
+    
         
     }
     
+    function get_event_posts($id_only = FALSE) {
+	$posts = array();
+	$the_query = new WP_Query(array(
+	    'cat' => $this->category_id,
+	    'posts_per_page' => -1
+	));
+	if ($id_only) {
+	    while ($the_query->have_posts()) : $the_query->the_post();
+		$posts[] = get_post_meta(get_the_ID(), 'wp_meetup_id', TRUE);
+	    endwhile;
+	} else {
+	    $posts = $the_query->posts;
+	}
+	wp_reset_query();
+	
+	return $posts;
+    }
+    
     function admin_options() {
+	
         if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}
@@ -124,7 +178,10 @@ class WP_Meetup {
         $data['group_url'] = !empty($this->options['group_url_name']) ? "http://www.meetup.com/" . $this->options['group_url_name'] : FALSE;
         
 	$data['group'] = $this->get_group();
-	$data['events'] = $this->get_events();
+	if ($events = $this->get_events()) {
+	    $this->add_event_posts($events);
+	    $data['events'] = $this->get_event_posts();
+	}
         
         echo $this->get_include_contents($this->dir . "options-page.php", $data);
         

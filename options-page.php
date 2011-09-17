@@ -1,3 +1,4 @@
+<div class="wrap">
 <?php
     //var_dump($this->admin_page_url);
     //$this->test();
@@ -20,6 +21,49 @@
 
 
 
+<?php if ($events): ?>
+<h3>Events (Upcoming in the next month)</h3>
+<pre>
+<?php //var_dump($events); ?>
+</pre>
+
+<table class="widefat">
+<thead>
+    <tr>
+        <th>Event Name</th>
+        <th>Event Date</th>
+        <th>Date Posted</th>
+        <th>RSVP Count</th>
+    </tr>
+</thead>
+<tfoot>
+    <tr>
+        <th>Event Name</th>
+        <th>Event Date</th>
+        <th>Date Posted</th>
+        <th>RSVP Count</th>
+    </tr>
+</tfoot>
+<tbody>
+   
+<?php foreach($events as $event): ?>
+<tr>
+    <td><a href="<?php echo get_permalink($event->ID); ?>"><?php echo $event->post_title; ?></a></td>
+    <td><?php echo date('D M j, Y, g:i A', get_post_meta($event->ID, 'wp_meetup_time', TRUE)); ?></td>
+    <td><?php echo date('D M j, Y, g:i A', strtotime($event->post_date)); ?></td>
+    <td><?php echo get_post_meta($event->ID, 'wp_meetup_rsvp_count', TRUE); ?> going</td>
+</tr>
+<?php endforeach; ?>
+   
+</tbody>
+</table>
+
+
+<?php endif; ?>
+
+
+
+
 <h3>API Key</h3>
 <p>
     To use WP Meetup, you need to provide your <a href="http://www.meetup.com/meetup_api/key/">Meetup.com API key</a>.  Just paste that key here:
@@ -33,6 +77,8 @@
     <input type="submit" value="Submit" class="button-secondary" />
 </p>
 </form>
+
+
 
 <h3>Group Information</h3>
 <p>
@@ -48,33 +94,5 @@
 </p>
 </form>
 
+</div><!--.wrap-->
 
-<?php if ($group): ?>
-
-<h3>Group Information</h3>
-<pre>
-<?php
-
-        //var_dump($response);
-?>
-</pre>
-
-<h4>Group name: <?php echo $group->name; ?></h4>
-<p>
-    <?php echo $group->description; ?>
-</p>
-
-<?php endif; ?>
-
-<?php if ($events): ?>
-<h3>Events</h3>
-<pre>
-<?php //var_dump($events); ?>
-</pre>
-<?php foreach($events as $event): ?>
-
-<h4><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></h4>
-<p>Time: <?php echo date('D M j, Y, g:i A', $event->time); ?>, <?php echo $event->yes_rsvp_count; ?> going</p>
-
-<?php endforeach; ?>
-<?php endif; ?>
