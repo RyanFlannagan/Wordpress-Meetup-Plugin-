@@ -20,7 +20,7 @@
 
 
 
-<?php if ($event_posts): ?>
+<?php if ($events): ?>
 <h3>Events (Upcoming in the next month)</h3>
 <pre>
 <?php //var_dump($events); ?>
@@ -45,12 +45,12 @@
 </tfoot>
 <tbody>
    
-<?php foreach($event_posts as $post): ?>
+<?php foreach($events as $event): ?>
 <tr>
-    <td><a href="<?php echo get_permalink($post->ID); ?>"><?php echo $post->post_title; ?></a></td>
-    <td><?php echo date('D M j, Y, g:i A', get_post_meta($post->ID, 'wp_meetup_time', TRUE)); ?></td>
-    <td><?php echo date('Y/m/d', strtotime($post->post_date)); ?><br /><?php echo ($post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
-    <td><?php echo get_post_meta($post->ID, 'wp_meetup_rsvp_count', TRUE); ?> going</td>
+    <td><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></td>
+    <td><?php echo date('D M j, Y, g:i A', $event->time); ?></td>
+    <td><?php echo date('Y/m/d', strtotime($event->post->post_date)); ?><br /><?php echo ($event->post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
+    <td><?php echo $event->yes_rsvp_count; ?> going</td>
 </tr>
 <?php endforeach; ?>
    

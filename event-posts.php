@@ -5,16 +5,10 @@ class WP_Meetup_Event_Posts {
     public $parent;
 
     
-    function add($events) {
-	
-	
-	
-	$existing_posts = $this->get_all(TRUE);
+    function add($event) {
+        
+	/*$existing_posts = $this->get_all(TRUE);
 	$added_post_count = 0;
-	
-	
-	//$this->pr($existing_posts);
-	//$this->pr($events);
 	
 	foreach ($events as $event) {
 	    
@@ -39,12 +33,22 @@ class WP_Meetup_Event_Posts {
 	}
 	
 	if ($added_post_count > 0)
-	    $this->feedback['success'][] = "Successfullly posted {$added_post_count} new events";
-	
-	//$this->pr($posts);
-	
-	//return $posts;
-    
+	    $this->feedback['success'][] = "Successfullly posted {$added_post_count} new events";*/
+        
+        
+        $post_status = strtotime("+" . $this->parent->get_option('publish_buffer')) >=  $event->time ? 'publish' : 'future';
+
+        $post = array(
+            'post_category' => array($this->parent->category_id),
+            'post_content' => $event->description,
+            'post_title' => $event->name,
+            'post_status' => $post_status,
+            'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $this->parent->get_option('publish_buffer'), $event->time)) 
+        );
+
+        $post_id = wp_insert_post($post);
+        
+        return $post_id;
         
     }
     

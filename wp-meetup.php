@@ -233,15 +233,29 @@ class WP_Meetup {
         $data['group_url'] = $this->group_url_name_to_meetup_url($this->get_option('group_url_name'));
         
 	$data['group'] = $this->get_group();
+	
 	if ($events = $this->get_events()) {
+	    
 	    $this->events->save_all($events);
-	    $data['events'] = $events;
-	    $this->event_posts->add($events);
-	    $data['event_posts'] = $this->event_posts->get_all();
+	    $data['events'] = $this->events->get_all();
+	    
+	    $this->add_event_posts($data['events']);
+	    //$data['event_posts'] = $this->event_posts->get_all();
 	}
         
         echo $this->get_include_contents($this->dir . "options-page.php", $data);
         
+    }
+    
+    function add_event_posts($events) {
+	
+	foreach ($events as $event) {
+	    if (!$event->post_id) {
+		$post_id = $this->event_posts->add($event);
+		$this->events->update_post_id($event->id, $post_id);
+	    }
+	}
+	
     }
     
     function get_include_contents($filename, $vars = array()) {
