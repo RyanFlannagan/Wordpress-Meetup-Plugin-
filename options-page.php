@@ -5,7 +5,7 @@
 ?>
 <h2>WP Meetup Options</h2>
 <p class="description">
-    Options for Meetup.com integration by <a href="http://nuancedmedia.com/">Nuanced Media</a>
+    Options for Meetup.com integration by <a href="http://nuancedmedia.com/">Nuanced Media</a>.
 </p>
 
 
@@ -30,7 +30,7 @@
     <input type="text" name="api_key" value="<?php echo $this->options['api_key']; ?>" />
 </p>
 <p>
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" class="button-secondary" />
 </p>
 </form>
 
@@ -44,12 +44,12 @@
     <input type="text" name="group_url" value="<?php echo $group_url; ?>" />
 </p>
 <p>
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" class="button-secondary" />
 </p>
 </form>
 
 
-<?php if ($has_api_key): ?>
+<?php if ($group): ?>
 
 <h3>Group Information</h3>
 <pre>
@@ -66,7 +66,7 @@
 
 <?php endif; ?>
 
-<?php if (count($events)): ?>
+<?php if ($events): ?>
 <h3>Events</h3>
 <pre>
 <?php //var_dump($events); ?>
