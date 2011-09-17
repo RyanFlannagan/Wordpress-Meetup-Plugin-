@@ -204,7 +204,7 @@ class WP_Meetup {
 	    if (!in_array($event->id, $existing_posts)) {
 		$added_post_count++;
 		$post_status = strtotime("+" . $this->get_option('publish_buffer')) >=  $event->time ? 'publish' : 'future';
-		//$this->pr(strtotime("+" . $this->get_option('publish_buffer')), $event->time,  $post_status, " ");
+
 		$post = array(
 		    'post_category' => array($this->category_id),
 		    'post_content' => $event->description,
@@ -212,9 +212,7 @@ class WP_Meetup {
 		    'post_status' => $post_status,
 		    'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $this->get_option('publish_buffer'), $event->time)) 
 		);
-		//$this->pr($post);
-		//date('d M Y H:i:s', strtotime('+1 month', strtotime('Thu Mar 31 19:50:41 IST 2011')));
-		//Y-m-d H:i:s
+
 		$post_id = wp_insert_post($post);
 		add_post_meta($post_id, 'wp_meetup_id', $event->id);
 		add_post_meta($post_id, 'wp_meetup_time', $event->time);

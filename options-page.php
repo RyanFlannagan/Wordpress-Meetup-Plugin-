@@ -1,6 +1,6 @@
 <div class="wrap">
 <?php
-    $this->pr($this->options);
+    //$this->pr($this->options);
     
 ?>
 <h2>WP Meetup Options</h2>
