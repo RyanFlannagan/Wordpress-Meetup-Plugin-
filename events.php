@@ -99,6 +99,12 @@ class WP_Meetup_Events {
         $this->wpdb->query($sql);
     }
     
+    function remove_all() {
+        $sql = "TRUNCATE TABLE `{$this->table_name}`";
+        
+        $this->wpdb->query($sql);
+    }
+    
     
 
 }

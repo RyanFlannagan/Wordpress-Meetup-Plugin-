@@ -151,6 +151,7 @@ class WP_Meetup {
             $parsed_name = $this->meetup_url_to_group_url_name($_POST['group_url']);
 	    if ($parsed_name != $this->get_option('group_url_name')) {
 		if ($this->set_option('group_url_name', $parsed_name)) {
+		    $this->remove_all_event_posts();
 		    $this->feedback['success'][] = "Successfullly added your group";
 		} else {
 		    $this->feedback['error'][] = "The Group URL you entered isn't valid.";
@@ -166,7 +167,7 @@ class WP_Meetup {
 	    $this->feedback['success'][] = "Successfullly updated your event category.";
 	}
 	
-	if (array_key_exists('publish_buffer', $_POST) && $_POST['category'] != $this->get_option('publish_buffer')) {
+	if (array_key_exists('publish_buffer', $_POST) && $_POST['publish_buffer'] != $this->get_option('publish_buffer')) {
 	    $this->set_option('publish_buffer', $_POST['publish_buffer']);
 	    
 	    $this->remove_all_event_posts();
@@ -178,7 +179,8 @@ class WP_Meetup {
     
     function remove_all_event_posts() {
 	$this->event_posts->remove_all();
-	$this->events->clear_post_ids();
+	//$this->events->clear_post_ids();
+	$this->events->remove_all();
     }
     
     function admin_menu() {
@@ -238,7 +240,7 @@ class WP_Meetup {
         $data['group_url'] = $this->group_url_name_to_meetup_url($this->get_option('group_url_name'));
         
 	$data['group'] = $this->get_group();
-	
+	$data['events'] = FALSE;
 	if ($events = $this->get_events()) {
 	    
 	    $this->events->save_all($events);
