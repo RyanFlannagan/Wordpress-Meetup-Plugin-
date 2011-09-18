@@ -168,10 +168,13 @@ class WP_Meetup {
         }
         
 	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->get_option('category')) {
-
+	    
+	    $old_category_id = $this->category_id;
 	    $this->set_option('category', $_POST['category']);
-
-	    $this->regenerate_events();
+	    $new_category_id = $this->category_id;
+	    
+	    $this->recategorize_event_posts($old_category_id, $new_category_id);
+	    
 
 	    $this->feedback['success'][] = "Successfullly updated your event category.";
 	}
@@ -190,6 +193,13 @@ class WP_Meetup {
 	    $this->feedback['success'][] = "Successfullly regenerated event posts.";
 	}
 	
+    }
+    
+    function recategorize_event_posts($old_category_id, $new_category_id) {
+	$events = $this->events->get_all();
+	foreach ($events as $event) {
+	    $this->event_posts->recategorize($event->post_id, $old_category_id, $new_category_id);
+	}
     }
     
     function remove_all_event_posts() {

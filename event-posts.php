@@ -44,6 +44,21 @@ class WP_Meetup_Event_Posts {
 	
     }
     
+    function recategorize($post_id, $old_category_id, $new_category_id) {
+        
+        $categories = wp_get_post_categories($post_id);
+        $categories = array_filter($categories, function($item) use (&$categories, &$old_category_id) {
+            return ($item != $old_category_id);
+        });
+        $categories[] = $new_category_id;
+
+        $new_post = array(
+            'ID' => $post_id,
+            'post_category' => $categories
+        );
+        wp_update_post($new_post);
+    }
+    
     /*function get_all($id_only = FALSE) {
 	$posts = array();
 	$the_query = new WP_Query(array(
