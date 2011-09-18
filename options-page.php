@@ -111,6 +111,7 @@ $date_select .= "</select>";
 
 <p>
     <input type="submit" value="Update Options" class="button-primary" />
+    <input type="submit" name="regenerate_events" value="Regenerate Event Posts" class="button-secondary" />
 </p>
 </form>
 

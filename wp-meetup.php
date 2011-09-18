@@ -111,17 +111,19 @@ class WP_Meetup {
 	    if (!$this->get_group($value)) return FALSE;
 	}
 	
-	if ($option_key == 'category') {
-	    if (!$this->category_id = get_cat_ID($this->options['category'])) {
-		$this->category_id = wp_insert_term($this->options['category'], 'category');
-	    }
-	}
+	
 	
 	if ($option_key == 'publish_buffer') {
 	    
 	}
 	
 	$this->options[$option_key] = $value;
+	
+	if ($option_key == 'category') {
+	    if (!$this->category_id = get_cat_ID($this->options['category'])) {
+		$this->category_id = wp_insert_term($this->options['category'], 'category');
+	    }
+	}
 	
 	update_option($internal_key, $value);
 	
@@ -156,7 +158,8 @@ class WP_Meetup {
             $parsed_name = $this->meetup_url_to_group_url_name($_POST['group_url']);
 	    if ($parsed_name != $this->get_option('group_url_name')) {
 		if ($this->set_option('group_url_name', $parsed_name)) {
-		    $this->remove_all_event_posts();
+
+		    $this->regenerate_events();
 		    $this->feedback['success'][] = "Successfullly added your group";
 		} else {
 		    $this->feedback['error'][] = "The Group URL you entered isn't valid.";
@@ -165,20 +168,26 @@ class WP_Meetup {
         }
         
 	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->get_option('category')) {
-	    
-	    //change_event_category();
-	    $this->remove_all_event_posts();
+
 	    $this->set_option('category', $_POST['category']);
-	    
+
+	    $this->regenerate_events();
+
 	    $this->feedback['success'][] = "Successfullly updated your event category.";
 	}
 	
 	if (array_key_exists('publish_buffer', $_POST) && $_POST['publish_buffer'] != $this->get_option('publish_buffer')) {
 	    $this->set_option('publish_buffer', $_POST['publish_buffer']);
 	    
-	    $this->remove_all_event_posts();
 
+	    $this->regenerate_events();
 	    $this->feedback['success'][] = "Successfullly updated your publishing buffer.";
+	}
+	
+	if (array_key_exists('regenerate_events', $_POST)) {
+
+	    $this->regenerate_events();
+	    $this->feedback['success'][] = "Successfullly regenerated event posts.";
 	}
 	
     }
@@ -188,8 +197,6 @@ class WP_Meetup {
 	foreach ($events as $event) {
 	    $this->event_posts->remove($event->post_id);
 	}
-	//$this->event_posts->remove_all();
-	//$this->events->clear_post_ids();
 	$this->events->remove_all();
     }
     
@@ -199,7 +206,7 @@ class WP_Meetup {
     }
     
     function get_events($start = 0, $end = "1m") {
-        
+	//$this->pr('getting events');
 	if (!$this->get_option('group_url_name') || !$this->get_option('api_key'))
 	    return FALSE;
 	
@@ -250,7 +257,14 @@ class WP_Meetup {
         $data['group_url'] = $this->group_url_name_to_meetup_url($this->get_option('group_url_name'));
         
 	$data['group'] = $this->get_group();
-	$data['events'] = FALSE;
+	$data['events'] = $this->events->get_all();
+        
+        echo $this->get_include_contents($this->dir . "options-page.php", $data);
+        
+    }
+    
+    function regenerate_events() {
+	$this->remove_all_event_posts();
 	if ($events = $this->get_events()) {
 	    
 	    $this->events->save_all($events);
@@ -259,11 +273,8 @@ class WP_Meetup {
 	    $this->add_event_posts($data['events']);
 	    
 	    $data['events'] = $this->events->get_all();
-	    //$data['event_posts'] = $this->event_posts->get_all();
+	    
 	}
-        
-        echo $this->get_include_contents($this->dir . "options-page.php", $data);
-        
     }
     
     function add_event_posts($events) {
