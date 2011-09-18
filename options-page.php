@@ -57,7 +57,7 @@
 </tbody>
 </table>
 
-<?php else: ?>
+<?php elseif($group != FALSE): ?>
 
 <p>There are no available events listed for this group.</p>
 

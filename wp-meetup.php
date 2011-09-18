@@ -64,8 +64,11 @@ class WP_Meetup {
     }
     
     function deactivate() {
-	//$this->pr("Dectivated!");
+	//$this->pr($this->option_map);
 	$this->events->drop_table();
+	foreach ($this->option_map as $key => $value) {
+	    delete_option(is_array($value) ? $value[0] : $value);
+	}
     }
     
     function get_option($option_key) {
@@ -162,8 +165,9 @@ class WP_Meetup {
 	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->get_option('category')) {
 	    
 	    //change_event_category();
+	    $this->remove_all_event_posts();
 	    $this->set_option('category', $_POST['category']);
-
+	    
 	    $this->feedback['success'][] = "Successfullly updated your event category.";
 	}
 	
@@ -178,7 +182,11 @@ class WP_Meetup {
     }
     
     function remove_all_event_posts() {
-	$this->event_posts->remove_all();
+	$events = $this->events->get_all();
+	foreach ($events as $event) {
+	    $this->event_posts->remove($event->post_id);
+	}
+	//$this->event_posts->remove_all();
 	//$this->events->clear_post_ids();
 	$this->events->remove_all();
     }

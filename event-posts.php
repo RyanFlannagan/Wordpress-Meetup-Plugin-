@@ -52,17 +52,17 @@ class WP_Meetup_Event_Posts {
         
     }
     
-    function remove_all() {
+    function remove($post_id = FALSE) {
 	//$this->pr("Time to update post dates");
-	$posts = $this->get_all();
+	//$posts = $this->get_all();
 	
-	foreach ($posts as $post) {
-	    wp_delete_post($post->ID);
-	}
+	//foreach ($posts_ids as $post_id) {
+	    wp_delete_post($post_id);
+	//}
 	
     }
     
-    function get_all($id_only = FALSE) {
+    /*function get_all($id_only = FALSE) {
 	$posts = array();
 	$the_query = new WP_Query(array(
 	    'cat' => $this->parent->category_id,
@@ -78,6 +78,6 @@ class WP_Meetup_Event_Posts {
 	wp_reset_query();
 	
 	return $posts;
-    }
+    }*/
     
 }
