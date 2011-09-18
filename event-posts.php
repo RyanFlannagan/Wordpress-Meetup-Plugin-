@@ -7,40 +7,21 @@ class WP_Meetup_Event_Posts {
     
     function add($event) {
         
-	/*$existing_posts = $this->get_all(TRUE);
-	$added_post_count = 0;
-	
-	foreach ($events as $event) {
-	    
-	    if (!in_array($event->id, $existing_posts)) {
-		$added_post_count++;
-		$post_status = strtotime("+" . $this->parent->get_option('publish_buffer')) >=  $event->time ? 'publish' : 'future';
-
-		$post = array(
-		    'post_category' => array($this->parent->category_id),
-		    'post_content' => $event->description,
-		    'post_title' => $event->name,
-		    'post_status' => $post_status,
-		    'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $this->parent->get_option('publish_buffer'), $event->time)) 
-		);
-
-		$post_id = wp_insert_post($post);
-		add_post_meta($post_id, 'wp_meetup_id', $event->id);
-		add_post_meta($post_id, 'wp_meetup_time', $event->time);
-		add_post_meta($post_id, 'wp_meetup_rsvp_count', $event->yes_rsvp_count);
-	    }
-	    
-	}
-	
-	if ($added_post_count > 0)
-	    $this->feedback['success'][] = "Successfullly posted {$added_post_count} new events";*/
-        
         
         $post_status = strtotime("+" . $this->parent->get_option('publish_buffer')) >=  $event->time ? 'publish' : 'future';
+        
+        $description = "<div class=\"wp-meetup-event\">";
+        $description .= "<a href=\"{$event->event_url}\" class=\"wp-meetup-event-link\">View event on Meetup.com</a>";
+        $description .= "<ul class=\"wp-meetup-event-details\">";
+        $description .= "<li>Date : " . date("l, F j, Y, g:i A", $event->time + $event->utc_offset/1000) . "</li>";
+        $description .= ($event->venue) ? "<li>Venue : " .  $event->venue->name . "</li>" : "";
+        $description .= "</ul>";
+        $description .= "</div>";
+        $description .= $event->description;
 
         $post = array(
             'post_category' => array($this->parent->category_id),
-            'post_content' => $event->description,
+            'post_content' => $description,
             'post_title' => $event->name,
             'post_status' => $post_status,
             'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $this->parent->get_option('publish_buffer'), $event->time)) 
@@ -57,7 +38,7 @@ class WP_Meetup_Event_Posts {
 	//$posts = $this->get_all();
 	
 	//foreach ($posts_ids as $post_id) {
-	    wp_delete_post($post_id);
+	    wp_delete_post($post_id, TRUE);
 	//}
 	
     }
