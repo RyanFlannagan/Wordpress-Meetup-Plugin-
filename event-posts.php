@@ -12,10 +12,10 @@ class WP_Meetup_Event_Posts {
         
         $description = "<div class=\"wp-meetup-event\">";
         $description .= "<a href=\"{$event->event_url}\" class=\"wp-meetup-event-link\">View event on Meetup.com</a>";
-        $description .= "<ul class=\"wp-meetup-event-details\">";
-        $description .= "<li>Date : " . date("l, F j, Y, g:i A", $event->time + $event->utc_offset/1000) . "</li>";
-        $description .= ($event->venue) ? "<li>Venue : " .  $event->venue->name . "</li>" : "";
-        $description .= "</ul>";
+        $description .= "<dl class=\"wp-meetup-event-details\">";
+        $description .= "<dt>Date</dt><dd>" . date("l, F j, Y, g:i A", $event->time + $event->utc_offset/1000) . "</dd>";
+        $description .= ($event->venue) ? "<dt>Venue</dt><dd>" .  $event->venue->name . "</dd>" : "";
+        $description .= "</dl>";
         $description .= "</div>";
         $description .= $event->description;
 

@@ -1,0 +1,30 @@
+.wp-meetup-event {
+    background: rgba(230, 230, 230, .7);
+    border-radius: 5px;
+    box-shadow: 0 0 5px 1px rgba(0,0,0,.3);
+    padding: 1.625em 1.625em 0;
+    margin: 0 1.625em .75em 0;
+    float: left;
+    width: 250px;
+}
+.wp-meetup-event a.wp-meetup-event-link {
+    display: block;
+    width: 100%;
+    padding: 5px 0;
+    text-align: center;
+    background: #E51937;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 1px rgba(0,0,0,.3);
+    color: #fff;
+    margin: 0 0 1.625em;
+}
+.wp-meetup-event dl.wp-meetup-event-details {
+    float: left;
+    margin: 0;
+}
+.wp-meetup-event dl.wp-meetup-event-details dt {
+    font-weight: bold;
+}
+.wp-meetup-event dl.wp-meetup-event-details dd {
+    margin: 0 0 1.625em;
+}

@@ -55,7 +55,9 @@ class WP_Meetup {
         register_activation_hook( __FILE__, array($this, 'activate') );
 	register_deactivation_hook( __FILE__, array($this, 'deactivate') );
         add_action('admin_menu', array($this, 'admin_menu'));
-        
+	
+	wp_register_style('wp-meetup-global-style', plugins_url('global.css', __FILE__));
+        wp_enqueue_style( 'wp-meetup-global-style' );
     }
     
     function activate() {
