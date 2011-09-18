@@ -16,6 +16,7 @@ class WP_Meetup_Event_Posts {
         $description .= "<dt>Date</dt><dd>" . date("l, F j, Y, g:i A", $event->time + $event->utc_offset/1000) . "</dd>";
         $description .= ($event->venue) ? "<dt>Venue</dt><dd>" .  $event->venue->name . "</dd>" : "";
         $description .= "</dl>";
+        $description .= "<p class=\"wp-meetup-plug\">Meetup.com integration powered by <a href=\"http://nuancedmedia.com/\">Nuanced Media</a>.</p>";
         $description .= "</div>";
         $description .= $event->description;
 
