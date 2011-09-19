@@ -28,6 +28,8 @@ class WP_Meetup {
     
     private $table_prefix;
     
+    const SHOW_PLUG = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
+    
     
     function WP_Meetup() {
 	
@@ -147,7 +149,7 @@ class WP_Meetup {
 	
 	foreach ($events as $event) {
 
-	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'));
+	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'), $this::SHOW_PLUG);
 	    
 	    $this->events->update_post_id($event->id, $post_id);
 	}
