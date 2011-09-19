@@ -282,7 +282,7 @@ class WP_Meetup {
     
 }
 
-function pr($args) {
+/*function pr($args) {
     
     $args = func_get_args();
     foreach ($args as $value) {
@@ -291,6 +291,6 @@ function pr($args) {
 	    echo "</pre>";
     }
     
-}
+}*/
 
 ?>

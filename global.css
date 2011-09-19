@@ -34,8 +34,8 @@
     margin-bottom: 2.5em;
 }
 
-#wp-meetup-calendar {
-    
+#wp-meetup-calendar table {
+    background: #fff;
 }
 #wp-meetup-calendar td {
     width: 14%;
