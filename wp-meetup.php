@@ -160,6 +160,7 @@ class WP_Meetup {
 		if ($this->set_option('group_url_name', $parsed_name)) {
 
 		    $this->regenerate_events();
+		    
 		    $this->feedback['success'][] = "Successfullly added your group";
 		} else {
 		    $this->feedback['error'][] = "The Group URL you entered isn't valid.";
@@ -183,7 +184,8 @@ class WP_Meetup {
 	    $this->set_option('publish_buffer', $_POST['publish_buffer']);
 	    
 
-	    $this->regenerate_events();
+	    $this->update_post_statuses();
+	    
 	    $this->feedback['success'][] = "Successfullly updated your publishing buffer.";
 	}
 	
@@ -193,6 +195,13 @@ class WP_Meetup {
 	    $this->feedback['success'][] = "Successfullly regenerated event posts.";
 	}
 	
+    }
+    
+    function update_post_statuses() {
+	$events = $this->events->get_all();
+	foreach ($events as $event) {
+	    $this->event_posts->set_date($event->post_id, $event->time, $this->get_option('publish_buffer'));
+	}
     }
     
     function recategorize_event_posts($old_category_id, $new_category_id) {
@@ -211,7 +220,7 @@ class WP_Meetup {
     }
     
     function admin_menu() {
-	if (!empty($_POST)) $this->handle_post_data();
+	
         add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($this, 'admin_options'));
     }
     
@@ -258,6 +267,8 @@ class WP_Meetup {
     
     function admin_options() {
 	
+	if (!empty($_POST)) $this->handle_post_data();
+	
         if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}
@@ -275,14 +286,14 @@ class WP_Meetup {
     
     function regenerate_events() {
 	$this->remove_all_event_posts();
-	if ($events = $this->get_events()) {
+	if ($event_data = $this->get_events()) {
 	    
-	    $this->events->save_all($events);
+	    $this->events->save_all($event_data);
 	    
-	    $data['events'] = $this->events->get_all();
-	    $this->add_event_posts($data['events']);
+	    $events = $this->events->get_all();
+	    $this->add_event_posts($events);
 	    
-	    $data['events'] = $this->events->get_all();
+	    //$data['events'] = $this->events->get_all();
 	    
 	}
     }

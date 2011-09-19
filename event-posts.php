@@ -3,6 +3,12 @@
 class WP_Meetup_Event_Posts {
     
     public $parent;
+    public $wpdb;
+    
+    function WP_Meetup_Event_Posts() {
+        global $wpdb;
+        $this->wpdb = &$wpdb;
+    }
 
     
     function add($event) {
@@ -57,6 +63,22 @@ class WP_Meetup_Event_Posts {
             'post_category' => $categories
         );
         wp_update_post($new_post);
+    }
+    
+    function set_date($post_id, $event_time, $publish_buffer) {
+        //$this->parent->pr($post_id, $event_time, $publish_buffer);
+        $post_status = strtotime("+" . $publish_buffer) >=  $event_time ? 'publish' : 'future';
+        $post_date = $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event_time));
+        $new_post = array(
+            'post_status' => $post_status,
+            'post_date' => $post_date,
+            'post_date_gmt' => get_gmt_from_date($post_date),
+            'post_modified' => current_time( 'mysql' ),
+            'post_modified_gmt' => current_time( 'mysql', 1 )
+        );
+        //$this->parent->pr($new_post);
+
+        $this->wpdb->update($this->wpdb->posts, $new_post, array('ID' => $post_id), array('%s','%s','%s','%s','%s'), array('%d'));
     }
     
     /*function get_all($id_only = FALSE) {
