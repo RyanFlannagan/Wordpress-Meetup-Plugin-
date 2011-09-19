@@ -45,7 +45,7 @@ class WP_Meetup_Event_Posts {
 	//$posts = $this->get_all();
 	
 	//foreach ($posts_ids as $post_id) {
-	    wp_delete_post($post_id, TRUE);
+	    wp_delete_post($post_id);
 	//}
 	
     }
