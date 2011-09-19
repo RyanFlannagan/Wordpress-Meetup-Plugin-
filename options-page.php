@@ -57,7 +57,7 @@ $post_status_map = array(
 <?php foreach($events as $event): ?>
 <tr>
     <td><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></td>
-    <td><?php echo date('D M j, Y, g:i A', $event->time); ?></td>
+    <td><?php echo date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000); ?></td>
     <td><?php echo date('Y/m/d', strtotime($event->post->post_date)); ?><br /><?php echo $post_status_map[$event->post->post_status];//($event->post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
     <td><?php echo $event->yes_rsvp_count; ?> going</td>
 </tr>
