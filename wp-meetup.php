@@ -12,6 +12,7 @@ include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "meetup_api/MeetupAPIBase.php"
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "event-posts.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "events.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "options.php");
+include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "widget.php");
 
 $meetup = new WP_Meetup();
 
@@ -50,6 +51,8 @@ class WP_Meetup {
 	
         register_activation_hook( __FILE__, array($this, 'activate') );
 	register_deactivation_hook( __FILE__, array($this, 'deactivate') );
+	
+	add_action( 'widgets_init', create_function( '', 'return register_widget("WP_Meetup_Calendar_Widget");' ) );
         add_action('admin_menu', array($this, 'admin_menu'));
 	
 	add_shortcode( 'wp-meetup-calendar', array($this, 'handle_shortcode') );
