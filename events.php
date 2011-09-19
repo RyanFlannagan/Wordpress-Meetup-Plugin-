@@ -44,15 +44,25 @@ class WP_Meetup_Events {
             $results[$key]->venue = unserialize($result->venue);
             $results[$key]->post = get_post($result->post_id);
         }
+        //pr($results);
         return $results;
+    }
+    
+    function get($event_id) {
+        return $this->wpdb->get_row("SELECT * FROM `{$this->table_name}` WHERE `id` = {$event_id}");
     }
     
     function save($event) {
         $data = (array) $event;
         $data['venue'] = $event->venue ? serialize($event->venue) : NULL;
-        //$this->parent->pr($data);
-
-        $this->wpdb->insert($this->table_name, $data);
+        //pr($data);
+        //pr($event->id, $this->get($event->id));
+        if ($row = $this->get($event->id)) {
+            unset($data['id']);
+            $this->wpdb->update($this->table_name, $data, array('id' => $event->id));
+        } else {
+            $this->wpdb->insert($this->table_name, $data);
+        }
         
     }
     
@@ -62,7 +72,6 @@ class WP_Meetup_Events {
         foreach ($events as $key => $event) {
             $event_data = array(
                 'id' => $event->id,
-                'post_id' => NULL,
                 'name' => $event->name,
                 'description' => $event->description,
                 'visibility' => $event->visibility,

@@ -70,4 +70,10 @@ class WP_Meetup_Options {
 	}
     }
     
+    function delete_all() {
+        foreach ($this->option_map as $key => $value) {
+	    delete_option(is_array($value) ? $value[0] : $value);
+	}
+    }
+    
 }

@@ -63,9 +63,7 @@ class WP_Meetup {
     function deactivate() {
 	//$this->pr($this->option_map);
 	$this->events->drop_table();
-	foreach ($this->option_map as $key => $value) {
-	    delete_option(is_array($value) ? $value[0] : $value);
-	}
+	$this->options->delete_all();
     }
     
     
@@ -123,10 +121,10 @@ class WP_Meetup {
 	    $this->feedback['message'][] = "Successfullly updated your publishing buffer.";
 	}
 	
-	if (array_key_exists('regenerate_events', $_POST)) {
+	if (array_key_exists('update_events', $_POST)) {
 
-	    $this->regenerate_events();
-	    $this->feedback['message'][] = "Successfullly regenerated event posts.";
+	    $this->update_events();
+	    $this->feedback['message'][] = "Successfullly updated event posts.";
 	}
 	
     }
@@ -145,15 +143,27 @@ class WP_Meetup {
 	}
     }
     
-    function add_event_posts($events) {
+    function save_event_posts($events) {
 	
 	foreach ($events as $event) {
-	    if (!$event->post_id) {
-		$post_id = $this->event_posts->add($event, $this->options->get('publish_buffer'), $this->options->get('category_id'));
-		$this->events->update_post_id($event->id, $post_id);
-	    }
+
+	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'));
+	    
+	    $this->events->update_post_id($event->id, $post_id);
 	}
 	
+    }
+    
+    function update_events() {
+	if ($event_data = $this->get_events()) {
+	    
+	    $this->events->save_all($event_data);
+	    
+	    $events = $this->events->get_all();
+	    //pr($events);
+	    $this->save_event_posts($events);
+	    
+	}
     }
     
     function remove_all_event_posts() {
@@ -166,16 +176,7 @@ class WP_Meetup {
     
     function regenerate_events() {
 	$this->remove_all_event_posts();
-	if ($event_data = $this->get_events()) {
-	    
-	    $this->events->save_all($event_data);
-	    
-	    $events = $this->events->get_all();
-	    $this->add_event_posts($events);
-	    
-	    //$data['events'] = $this->events->get_all();
-	    
-	}
+	$this->update_events();
     }
     
     
@@ -257,15 +258,17 @@ class WP_Meetup {
         return false;
     }
     
-    function pr($args) {
-	
-	$args = func_get_args();
-	foreach ($args as $value) {
-		echo "<pre>";
-		print_r($value);
-		echo "</pre>";
-	}
-	
+    
+    
+}
+
+function pr($args) {
+    
+    $args = func_get_args();
+    foreach ($args as $value) {
+	    echo "<pre>";
+	    print_r($value);
+	    echo "</pre>";
     }
     
 }

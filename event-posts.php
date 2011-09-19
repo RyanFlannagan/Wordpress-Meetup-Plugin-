@@ -10,7 +10,7 @@ class WP_Meetup_Event_Posts {
     }
 
     
-    function add($event, $publish_buffer, $category_id) {
+    function save_event($event, $publish_buffer, $category_id) {
         
         
         $post_status = strtotime("+" . $publish_buffer) >=  $event->time ? 'publish' : 'future';
@@ -32,11 +32,21 @@ class WP_Meetup_Event_Posts {
             'post_status' => $post_status,
             'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event->time)) 
         );
-
-        $post_id = wp_insert_post($post);
         
+        if ($event->post_id)
+            $post['ID'] = $event->post_id;
+
+        $post_id = $this->save($post);
+
         return $post_id;
         
+    }
+    
+    function save($data) {
+        
+        $post_id = wp_insert_post($data);
+
+        return $post_id;
     }
     
     function remove($post_id = FALSE) {
