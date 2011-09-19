@@ -25,8 +25,7 @@ class WP_Meetup {
     private $event_posts;
     private $events;
     private $table_prefix;
-    
-    public $category_id;
+    private $category_id;
     
     
     function WP_Meetup() {
@@ -43,14 +42,11 @@ class WP_Meetup {
 	$this->table_prefix = $wpdb->prefix . "wpmeetup_";
 	
 	$this->event_posts = new WP_Meetup_Event_Posts();
-	$this->event_posts->parent = &$this;
 	
 	$this->events = new WP_Meetup_Events();
-	$this->events->parent = &$this;
 	$this->events->table_name = $this->table_prefix . "events";
 	
 	$this->get_all_options();
-	
 	
         register_activation_hook( __FILE__, array($this, 'activate') );
 	register_deactivation_hook( __FILE__, array($this, 'deactivate') );
@@ -58,6 +54,7 @@ class WP_Meetup {
 	
 	wp_register_style('wp-meetup-global-style', plugins_url('global.css', __FILE__));
         wp_enqueue_style( 'wp-meetup-global-style' );
+	
     }
     
     function activate() {
@@ -302,7 +299,7 @@ class WP_Meetup {
 	
 	foreach ($events as $event) {
 	    if (!$event->post_id) {
-		$post_id = $this->event_posts->add($event);
+		$post_id = $this->event_posts->add($event, $this->get_option('publish_buffer'), $this->category_id);
 		$this->events->update_post_id($event->id, $post_id);
 	    }
 	}

@@ -2,7 +2,6 @@
 
 class WP_Meetup_Events {
 
-    public $parent;
     public $table_name;
     private $wpdb;
     

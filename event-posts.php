@@ -2,7 +2,6 @@
 
 class WP_Meetup_Event_Posts {
     
-    public $parent;
     public $wpdb;
     
     function WP_Meetup_Event_Posts() {
@@ -11,10 +10,10 @@ class WP_Meetup_Event_Posts {
     }
 
     
-    function add($event) {
+    function add($event, $publish_buffer, $category_id) {
         
         
-        $post_status = strtotime("+" . $this->parent->get_option('publish_buffer')) >=  $event->time ? 'publish' : 'future';
+        $post_status = strtotime("+" . $publish_buffer) >=  $event->time ? 'publish' : 'future';
         
         $description = "<div class=\"wp-meetup-event\">";
         $description .= "<a href=\"{$event->event_url}\" class=\"wp-meetup-event-link\">View event on Meetup.com</a>";
@@ -27,11 +26,11 @@ class WP_Meetup_Event_Posts {
         $description .= $event->description;
 
         $post = array(
-            'post_category' => array($this->parent->category_id),
+            'post_category' => array($category_id),
             'post_content' => $description,
             'post_title' => $event->name,
             'post_status' => $post_status,
-            'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $this->parent->get_option('publish_buffer'), $event->time)) 
+            'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event->time)) 
         );
 
         $post_id = wp_insert_post($post);
