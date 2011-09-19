@@ -13,7 +13,7 @@
 <?php foreach ($this->feedback as $message_type => $messages): ?>
 
 <?php foreach ($messages as $message): ?>
-<div class="<?php echo $message_type; ?>"><?php echo $message; ?></div>
+<div class="<?php echo $message_type == 'error' ? 'error' : 'updated'; ?>"><p><?php echo $message; ?></p></div>
 <?php endforeach; ?>
 
 <?php endforeach; ?>

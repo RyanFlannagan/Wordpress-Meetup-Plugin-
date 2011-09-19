@@ -19,7 +19,7 @@ class WP_Meetup {
     
     private $dir;
     private $admin_page_url;
-    private $feedback = array('error' => array(), 'message' => array(), 'success' => array());
+    private $feedback = array('error' => array(), 'message' => array());
 
     private $mu_api;
     private $event_posts;
@@ -84,7 +84,7 @@ class WP_Meetup {
         if (array_key_exists('api_key', $_POST) && $_POST['api_key'] != $this->options->get('api_key')) {
 
 		$this->options->set('api_key', $_POST['api_key']);
-		$this->feedback['success'][] = "Successfullly updated your API key!";
+		$this->feedback['message'][] = "Successfullly updated your API key!";
 
         }
         
@@ -95,7 +95,7 @@ class WP_Meetup {
 		    $this->options->set('group_url_name', $parsed_name);
 		    $this->regenerate_events();
 		    
-		    $this->feedback['success'][] = "Successfullly added your group";
+		    $this->feedback['message'][] = "Successfullly added your group";
 		} else {
 		    $this->feedback['error'][] = "The Group URL you entered isn't valid.";
 		}
@@ -111,7 +111,7 @@ class WP_Meetup {
 	    $this->recategorize_event_posts($old_category_id, $new_category_id);
 	    
 
-	    $this->feedback['success'][] = "Successfullly updated your event category.";
+	    $this->feedback['message'][] = "Successfullly updated your event category.";
 	}
 	
 	if (array_key_exists('publish_buffer', $_POST) && $_POST['publish_buffer'] != $this->options->get('publish_buffer')) {
@@ -120,13 +120,13 @@ class WP_Meetup {
 
 	    $this->update_post_statuses();
 	    
-	    $this->feedback['success'][] = "Successfullly updated your publishing buffer.";
+	    $this->feedback['message'][] = "Successfullly updated your publishing buffer.";
 	}
 	
 	if (array_key_exists('regenerate_events', $_POST)) {
 
 	    $this->regenerate_events();
-	    $this->feedback['success'][] = "Successfullly regenerated event posts.";
+	    $this->feedback['message'][] = "Successfullly regenerated event posts.";
 	}
 	
     }
