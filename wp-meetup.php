@@ -187,7 +187,7 @@ class WP_Meetup {
         add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($this, 'admin_options'));
     }
     
-    function get_events($start = 0, $end = "1m") {
+    function get_events($start = 0, $end = "2m") {
 	//$this->pr('getting events');
 	if (!$this->options->get('group_url_name') || !$this->options->get('api_key'))
 	    return FALSE;
