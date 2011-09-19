@@ -54,8 +54,8 @@ class WP_Meetup {
 	
 	add_shortcode( 'wp-meetup-calendar', array($this, 'handle_shortcode') );
 	
-	wp_register_style('wp-meetup-global-style', plugins_url('global.css', __FILE__));
-        wp_enqueue_style( 'wp-meetup-global-style' );
+	wp_register_style('wp-meetup', plugins_url('global.css', __FILE__));
+        wp_enqueue_style( 'wp-meetup' );
 	
     }
     
