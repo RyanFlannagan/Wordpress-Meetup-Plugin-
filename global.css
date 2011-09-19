@@ -41,6 +41,7 @@
     width: 14%;
     font-size: .75em;
     height: 5em;
+    vertical-align: top;
 }
 #wp-meetup-calendar td.weekend {
     
