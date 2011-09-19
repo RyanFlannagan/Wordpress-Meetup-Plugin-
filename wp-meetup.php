@@ -248,7 +248,7 @@ class WP_Meetup {
         $data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
         
 	$data['group'] = $this->get_group();
-	$data['events'] = $this->events->get_all();
+	$data['events'] = $this->events->get_all_upcoming();
         
         echo $this->get_include_contents($this->dir . "options-page.php", $data);
         

@@ -8,17 +8,34 @@ class WP_Meetup_Event_Posts {
         global $wpdb;
         $this->wpdb = &$wpdb;
     }
+    
+    private function get_post_status($event_adjusted_time, $publish_buffer) {
+
+        $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
+        
+        if (strtotime("+" . $publish_buffer) >= $event_adjusted_time) {
+            if ($event_adjusted_time >= $today) {
+                return 'publish';
+            } else {
+                return 'draft';
+            }
+        } else {
+            return'future';
+        }
+        
+        return FALSE;
+    }
 
     
     function save_event($event, $publish_buffer, $category_id, $show_plug) {
         
-        
-        $post_status = strtotime("+" . $publish_buffer) >=  $event->time ? 'publish' : 'future';
+        $event_adjusted_time = $event->time + $event->utc_offset/1000;
+        $post_status = ($event->post_id) ? $event->post->post_status : $this->get_post_status($event_adjusted_time, $publish_buffer);
         
         $description = "<div class=\"wp-meetup-event\">";
         $description .= "<a href=\"{$event->event_url}\" class=\"wp-meetup-event-link\">View event on Meetup.com</a>";
         $description .= "<dl class=\"wp-meetup-event-details\">";
-        $description .= "<dt>Date</dt><dd>" . date("l, F j, Y, g:i A", $event->time + $event->utc_offset/1000) . "</dd>";
+        $description .= "<dt>Date</dt><dd>" . date("l, F j, Y, g:i A", $event_adjusted_time) . "</dd>";
         $description .= ($event->venue) ? "<dt>Venue</dt><dd>" .  $event->venue->name . "</dd>" : "";
         $description .= "</dl>";
         if ($show_plug)
@@ -31,7 +48,7 @@ class WP_Meetup_Event_Posts {
             'post_content' => $description,
             'post_title' => $event->name,
             'post_status' => $post_status,
-            'post_date' => $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event->time)) 
+            'post_date' => date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event->time)) 
         );
         
         if ($event->post_id)

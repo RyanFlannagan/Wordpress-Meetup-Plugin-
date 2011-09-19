@@ -48,6 +48,17 @@ class WP_Meetup_Events {
         return $results;
     }
     
+    function get_all_upcoming() {
+        $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
+        $results = $this->wpdb->get_results("SELECT * FROM `{$this->table_name}` WHERE `time` >= '{$today}' ORDER BY `time`", "OBJECT");
+        foreach ($results as $key => $result) {
+            $results[$key]->venue = unserialize($result->venue);
+            $results[$key]->post = get_post($result->post_id);
+        }
+        //pr($results);
+        return $results;
+    }
+    
     function get($event_id) {
         return $this->wpdb->get_row("SELECT * FROM `{$this->table_name}` WHERE `id` = {$event_id}");
     }
