@@ -44,12 +44,21 @@
     </tr>
 </tfoot>
 <tbody>
-   
+<?php
+$post_status_map = array(
+    'publish' => 'Published',
+    'pending' => 'Pending',
+    'draft' => 'Draft',
+    'future' => 'Scheduled',
+    'private' => 'Private',
+    'trash' => 'Trashed'
+);
+?>
 <?php foreach($events as $event): ?>
 <tr>
     <td><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></td>
     <td><?php echo date('D M j, Y, g:i A', $event->time); ?></td>
-    <td><?php echo date('Y/m/d', strtotime($event->post->post_date)); ?><br /><?php echo ($event->post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
+    <td><?php echo date('Y/m/d', strtotime($event->post->post_date)); ?><br /><?php echo $post_status_map[$event->post->post_status];//($event->post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
     <td><?php echo $event->yes_rsvp_count; ?> going</td>
 </tr>
 <?php endforeach; ?>
@@ -73,7 +82,7 @@
 
 <p>
     <label>Meetup.com API Key: </label>
-    <input type="text" name="api_key" size="30" value="<?php echo $this->get_option('api_key'); ?>" />
+    <input type="text" name="api_key" size="30" value="<?php echo $this->options->get('api_key'); ?>" />
 </p>
 
 
@@ -95,7 +104,7 @@ $options = array(
     '1 month' => '1 month'
 );
 foreach ($options as $label => $value) {
-    $date_select .= "<option value=\"{$value}\"" . ($this->get_option('publish_buffer') == $value ? ' selected="selected"' : "") . ">$label</option>";
+    $date_select .= "<option value=\"{$value}\"" . ($this->options->get('publish_buffer') == $value ? ' selected="selected"' : "") . ">$label</option>";
 }
 $date_select .= "</select>";
 ?>
@@ -103,7 +112,7 @@ $date_select .= "</select>";
 
 <h3>Event-to-Post Options</h3>
 <p>
-    <label>Categorize each event post as <input type="text" name="category" value="<?php echo $this->get_option('category'); ?>" /></label>
+    <label>Categorize each event post as <input type="text" name="category" value="<?php echo $this->options->get('category'); ?>" /></label>
 </p>
 <p>
     <label>Publish event posts <?php echo $date_select; ?> before the event date.</label>
