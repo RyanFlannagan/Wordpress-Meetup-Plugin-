@@ -33,3 +33,42 @@
     color: #666;
     margin-bottom: 2.5em;
 }
+
+#wp-meetup-calendar {
+    
+}
+#wp-meetup-calendar td {
+    width: 14%;
+    font-size: .75em;
+    height: 5em;
+}
+#wp-meetup-calendar td.weekend {
+    
+}
+#wp-meetup-calendar td.out-of-range {
+    background: #f6f6f6;
+}
+#wp-meetup-calendar td.today {
+    background: #eeeeff;
+}
+#wp-meetup-calendar td ul {
+    margin: 0 auto;
+}
+#wp-meetup-calendar td ul li {
+    list-style: none;
+    background: #E51937;
+    border-radius: 5px;
+    padding: 3px;
+    box-shadow: 0 0 5px 1px rgba(0,0,0,.3);
+    margin-bottom: 1.5em;
+}
+#wp-meetup-calendar td ul li:last-child {
+    margin-bottom: 0;
+}
+#wp-meetup-calendar td ul li a {
+    color: #ddd;
+}
+#wp-meetup-calendar td li span {
+    display: block;
+    font-weight: bold;
+}
