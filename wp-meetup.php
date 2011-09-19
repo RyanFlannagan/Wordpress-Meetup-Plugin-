@@ -187,16 +187,23 @@ class WP_Meetup {
         add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($this, 'admin_options'));
     }
     
-    function get_events($start = 0, $end = "2m") {
-	//$this->pr('getting events');
+    function get_events($start = FALSE, $end = "2m") {
+	if ($start === FALSE) {
+	    $start = mktime(0, 0, 0, date('n'), 1, date('Y'));
+	    $start *= 1000;
+	    $start = number_format($start, 0, '.', '');
+	}
+
 	if (!$this->options->get('group_url_name') || !$this->options->get('api_key'))
 	    return FALSE;
 	
         $this->mu_api = new MeetupAPIBase($this->options->get('api_key'), '2/events');
-        $this->mu_api->setQuery( array(
+        $this->mu_api->setQuery(array(
             'group_urlname' => $this->options->get('group_url_name'),
+	    'status' => 'upcoming,past',
             'time' => $start . "," . $end
-        )); 
+        ));
+
         set_time_limit(0);
         $this->mu_api->setPageSize(200);
         $response = $this->mu_api->getResponse();
@@ -282,7 +289,7 @@ class WP_Meetup {
     
 }
 
-/*function pr($args) {
+function pr($args) {
     
     $args = func_get_args();
     foreach ($args as $value) {
@@ -291,6 +298,6 @@ class WP_Meetup {
 	    echo "</pre>";
     }
     
-}*/
+}
 
 ?>

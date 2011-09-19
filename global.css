@@ -19,7 +19,6 @@
     margin: 0 0 1.625em;
 }
 .wp-meetup-event dl.wp-meetup-event-details {
-    float: left;
     margin: 0;
 }
 .wp-meetup-event dl.wp-meetup-event-details dt {
@@ -74,6 +73,11 @@
 #wp-meetup-calendar td ul li a:hover {
     color: #fff;
     box-shadow: 0 0 5px 1px rgba(102, 153, 255, 1);
+}
+#wp-meetup-calendar td ul li.past a {
+    background: #ccc;
+    color: #333;
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.2);
 }
 #wp-meetup-calendar td li span {
     display: block;
