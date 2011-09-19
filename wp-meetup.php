@@ -264,6 +264,22 @@ class WP_Meetup {
         return false;
     }
     
+    function element($tag_name, $content = '', $attributes = NULL) {
+	if ($attributes) {
+	    $html_string = "<$tag_name";
+	    foreach ($attributes as $key => $value) {
+		if ($value != '')
+		    $html_string .= " {$key}=\"{$value}\"";
+	    }
+	    $html_string .= ">";
+	} else {
+	    $html_string = "<$tag_name>";
+	}
+	$html_string .= $content;
+	$html_string .= "</$tag_name>";
+	return $html_string;
+    }
+    
 }
 
 function pr($args) {

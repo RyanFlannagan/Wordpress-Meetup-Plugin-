@@ -17,22 +17,6 @@ unset($events);
 
 //pr($events_by_date);
 
-function element($tag_name, $content = '', $attributes = NULL) {
-    if ($attributes) {
-        $html_string = "<$tag_name";
-        foreach ($attributes as $key => $value) {
-            if ($value != '')
-                $html_string .= " {$key}=\"{$value}\"";
-        }
-        $html_string .= ">";
-    } else {
-        $html_string = "<$tag_name>";
-    }
-    $html_string .= $content;
-    $html_string .= "</$tag_name>";
-    return $html_string;
-}
-
 $number_of_months = 2;
 $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
 
@@ -45,9 +29,9 @@ for ($m = 0; $m < $number_of_months; $m++) {
     
     $theadrow_contents = '';
     foreach (array('Su', 'M', 'T', 'W', 'Th', 'F', 'Sa') as $day) {
-        $theadrow_contents .= element('th', $day);
+        $theadrow_contents .= $this->element('th', $day);
     }
-    $thead_contents = element('tr', $theadrow_contents);
+    $thead_contents = $this->element('tr', $theadrow_contents);
     
     $tbody_contents = '';
     $current_date = $date_start;
@@ -72,35 +56,35 @@ for ($m = 0; $m < $number_of_months; $m++) {
             if (array_key_exists($date_key, $events_by_date)) {
                 $ul_contents = "";
                 foreach ($events_by_date[$date_key] as $event) {
-                    $ul_contents .= element('li',
-                        element('a',
-                            element('span', date("g:i A", $event->time + $event->utc_offset/1000)) . $event->name,
+                    $ul_contents .= $this->element('li',
+                        $this->element('a',
+                            $this->element('span', date("g:i A", $event->time + $event->utc_offset/1000)) . $event->name,
                             array('href' => get_permalink($event->post->ID))
                         )
                     );
                 }
-                $td_contents .= element('ul', $ul_contents);
+                $td_contents .= $this->element('ul', $ul_contents);
             }
             
             if (date('n', $current_date) == $current_month) {
-                $tr_contents .= element('td', $td_contents, array('class' => implode(' ', $td_classes)));
+                $tr_contents .= $this->element('td', $td_contents, array('class' => implode(' ', $td_classes)));
             } else {
-                $tr_contents .= element('td', "", array('class' => 'out-of-range'));
+                $tr_contents .= $this->element('td', "", array('class' => 'out-of-range'));
             }
             
         }
         
-        $tbody_contents .= element('tr', $tr_contents);
+        $tbody_contents .= $this->element('tr', $tr_contents);
         $i++;
     }
     
-    $div_contents .= element('h2', date('F Y', $first_of_the_month));
+    $div_contents .= $this->element('h2', date('F Y', $first_of_the_month));
     $table_class = $current_month - date('n') == 0 ? "current-month" : "next-month";
-    $div_contents .= element('table', element('thead', $thead_contents) . element('tbody', $tbody_contents), array('class' => $table_class,'cellpadding' => 0, 'cellspacing' => 0));
+    $div_contents .= $this->element('table', $this->element('thead', $thead_contents) . $this->element('tbody', $tbody_contents), array('class' => $table_class,'cellpadding' => 0, 'cellspacing' => 0));
      
 }
 
-echo element('div', $div_contents, array('id' => 'wp-meetup-calendar'));
+echo $this->element('div', $div_contents, array('id' => 'wp-meetup-calendar'));
 
 
 ?>
