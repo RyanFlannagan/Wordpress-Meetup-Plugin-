@@ -52,6 +52,8 @@ class WP_Meetup {
 	register_deactivation_hook( __FILE__, array($this, 'deactivate') );
         add_action('admin_menu', array($this, 'admin_menu'));
 	
+	add_shortcode( 'wp-meetup-calendar', array($this, 'handle_shortcode') );
+	
 	wp_register_style('wp-meetup-global-style', plugins_url('global.css', __FILE__));
         wp_enqueue_style( 'wp-meetup-global-style' );
 	
@@ -67,8 +69,6 @@ class WP_Meetup {
 	$this->events->drop_table();
 	$this->options->delete_all();
     }
-    
-    
     
     function group_url_name_to_meetup_url($group_url_name) {
 	return "http://www.meetup.com/" . $group_url_name;
@@ -246,9 +246,13 @@ class WP_Meetup {
         echo $this->get_include_contents($this->dir . "options-page.php", $data);
         
     }
+
+    function handle_shortcode() {
+	$data = array();
+	$data['events'] = $this->events->get_all();
     
-
-
+	return $this->get_include_contents($this->dir . "event-calendar.php", $data);
+    }
     
     function get_include_contents($filename, $vars = array()) {
         if (is_file($filename)) {
@@ -259,8 +263,6 @@ class WP_Meetup {
         }
         return false;
     }
-    
-    
     
 }
 
