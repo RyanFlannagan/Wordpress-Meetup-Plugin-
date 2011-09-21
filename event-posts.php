@@ -80,11 +80,12 @@ class WP_Meetup_Event_Posts {
     function recategorize($post_id, $old_category_id, $new_category_id) {
         
         $categories = wp_get_post_categories($post_id);
-        $categories = array_filter($categories, function($item) use (&$categories, &$old_category_id) {
-            return ($item != $old_category_id);
-        });
+        foreach ($categories as $key => $category) {
+            if ($category == $old_category_id) unset($categories[$key]);
+        }
+        
         $categories[] = $new_category_id;
-
+        
         $new_post = array(
             'ID' => $post_id,
             'post_category' => $categories

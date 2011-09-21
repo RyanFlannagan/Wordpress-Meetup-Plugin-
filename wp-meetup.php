@@ -92,6 +92,18 @@ class WP_Meetup {
 		$this->feedback['message'][] = "Successfullly updated your API key!";
 
         }
+	
+	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->options->get('category')) {
+	    
+	    $old_category_id = $this->options->get('category_id');
+	    $this->options->set('category', $_POST['category']);
+	    $new_category_id = $this->options->get('category_id');
+	    
+	    $this->recategorize_event_posts($old_category_id, $new_category_id);
+	    
+
+	    $this->feedback['message'][] = "Successfullly updated your event category.";
+	}
         
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = $this->meetup_url_to_group_url_name($_POST['group_url']);
@@ -106,18 +118,6 @@ class WP_Meetup {
 		}
 	    }
         }
-        
-	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->options->get('category')) {
-	    
-	    $old_category_id = $this->options->get('category_id');
-	    $this->options->set('category', $_POST['category']);
-	    $new_category_id = $this->options->get('category_id');
-	    
-	    $this->recategorize_event_posts($old_category_id, $new_category_id);
-	    
-
-	    $this->feedback['message'][] = "Successfullly updated your event category.";
-	}
 	
 	if (array_key_exists('publish_buffer', $_POST) && $_POST['publish_buffer'] != $this->options->get('publish_buffer')) {
 	    $this->options->set('publish_buffer', $_POST['publish_buffer']);
@@ -294,15 +294,17 @@ class WP_Meetup {
     
 }
 
-/*function pr($args) {
-    
-    $args = func_get_args();
-    foreach ($args as $value) {
-	    echo "<pre>";
-	    print_r($value);
-	    echo "</pre>";
+if ($_SERVER['HTTP_HOST'] == 'localhost') {
+    function pr($args) {
+	
+	$args = func_get_args();
+	foreach ($args as $value) {
+		echo "<pre>";
+		print_r($value);
+		echo "</pre>";
+	}
+	
     }
-    
-}*/
+}
 
 ?>
