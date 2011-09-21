@@ -253,7 +253,7 @@ class WP_Meetup {
 	$data['group'] = $this->get_group();
 	$data['events'] = $this->events->get_all_upcoming();
         
-        echo $this->get_include_contents($this->dir . "options-page.php", $data);
+        echo $this->get_include_contents("options-page.php", $data);
         
     }
 
@@ -261,14 +261,14 @@ class WP_Meetup {
 	$data = array();
 	$data['events'] = $this->events->get_all();
     
-	return $this->get_include_contents($this->dir . "event-calendar.php", $data);
+	return $this->get_include_contents("event-calendar.php", $data);
     }
     
     function get_include_contents($filename, $vars = array()) {
-        if (is_file($filename)) {
+        if (is_file($this->dir . $filename)) {
             ob_start();
 	    extract($vars);
-            include $filename;
+            include $this->dir . $filename;
             return ob_get_clean();
         }
         return false;
