@@ -89,8 +89,7 @@ if (count($events_by_date) > 0) {
     }
     
     $table_caption = $this->element('caption', date('F Y', $first_of_the_month));
-    $table_class = $current_month - date('n') == 0 ? "current-month" : "next-month";
-    $div_contents .= $this->element('table', $table_caption . $this->element('thead', $thead_contents) . $this->element('tbody', $tbody_contents), array('class' => $table_class,'cellpadding' => 0, 'cellspacing' => 0));
+    $div_contents .= $this->element('table', $table_caption . $this->element('thead', $thead_contents) . $this->element('tbody', $tbody_contents), array('cellpadding' => 0, 'cellspacing' => 0));
     
     echo $this->element('div', $div_contents, array('id' => 'wp-meetup-widget-calendar'));
 } else {

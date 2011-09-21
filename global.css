@@ -83,3 +83,23 @@
     display: block;
     font-weight: bold;
 }
+
+#wp-meetup-widget-calendar {    
+}
+#wp-meetup-widget-calendar table {
+    width: 100%;
+}
+#wp-meetup-widget-calendar table caption {
+    text-align: center;
+    font-weight: bold;
+}
+#wp-meetup-widget-calendar thead {
+    background: #E51937;
+    color: #fff;
+}
+#wp-meetup-widget-calendar th {
+    font-weight: bold;
+}
+#wp-meetup-widget-calendar th, #wp-meetup-widget-calendar td {
+    padding: 3px;
+}
