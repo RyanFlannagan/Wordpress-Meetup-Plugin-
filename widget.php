@@ -1,12 +1,11 @@
 <?php
 class WP_Meetup_Calendar_Widget extends WP_Widget {
     
-    private $events;
     private $core;
     
     function WP_Meetup_Calendar_Widget() {
         parent::WP_Widget( 'wp_meetup_calendar_widget', $name = 'WP Meetup Calendar Widget', array('description' => 'An awesome widget'));
-        $this->events = new WP_Meetup_Events;
+        //$this->events = new WP_Meetup_Events;
         $this->core = new WP_Meetup;
     }
     
@@ -29,7 +28,7 @@ class WP_Meetup_Calendar_Widget extends WP_Widget {
         if ( $title )
             echo $before_title . $title . $after_title;
         
-        echo $this->core->get_include_contents('widget_view.php');
+        echo $this->core->get_include_contents('widget_view.php', array('events' => $this->core->events->get_all()));
         
         echo $after_widget;
     }

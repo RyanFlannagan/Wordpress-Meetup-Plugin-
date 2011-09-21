@@ -24,7 +24,7 @@ class WP_Meetup {
 
     private $mu_api;
     private $event_posts;
-    private $events;
+    public $events;
     private $options;
     
     private $table_prefix;
