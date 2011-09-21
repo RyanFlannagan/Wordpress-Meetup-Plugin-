@@ -32,7 +32,7 @@ class WP_Meetup {
     const SHOW_PLUG = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
     
     
-    function WP_Meetup() {
+    function WP_Meetup($add_actions = TRUE) {
 	
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
 	$this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
@@ -49,16 +49,18 @@ class WP_Meetup {
 	
 	//$this->get_all_options();
 	
-        register_activation_hook( __FILE__, array($this, 'activate') );
-	register_deactivation_hook( __FILE__, array($this, 'deactivate') );
-	
-	add_action( 'widgets_init', create_function( '', 'return register_widget("WP_Meetup_Calendar_Widget");' ) );
-        add_action('admin_menu', array($this, 'admin_menu'));
-	
-	add_shortcode( 'wp-meetup-calendar', array($this, 'handle_shortcode') );
-	
-	wp_register_style('wp-meetup', plugins_url('global.css', __FILE__));
-        wp_enqueue_style( 'wp-meetup' );
+	if ($add_actions) {
+	    register_activation_hook( __FILE__, array($this, 'activate') );
+	    register_deactivation_hook( __FILE__, array($this, 'deactivate') );
+	    
+	    add_action( 'widgets_init', create_function( '', 'return register_widget("WP_Meetup_Calendar_Widget");' ) );
+	    add_action('admin_menu', array($this, 'admin_menu'));
+	    
+	    add_shortcode( 'wp-meetup-calendar', array($this, 'handle_shortcode') );
+	    
+	    wp_register_style('wp-meetup', plugins_url('global.css', __FILE__));
+	    wp_enqueue_style( 'wp-meetup' );
+	}
 	
     }
     
