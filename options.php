@@ -15,7 +15,10 @@ class WP_Meetup_Options {
         
         $this->get_all_options();
         
-        $this->category_id = get_cat_ID($this->options['category']);
+        if (!$this->category_id = get_cat_ID($this->options['category'])) {
+            $result = wp_insert_term($this->options['category'], 'category');
+            $this->category_id = $result['term_taxonomy_id'];
+        }
     }
     
     function get($option_key) {

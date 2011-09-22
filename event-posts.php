@@ -77,7 +77,7 @@ class WP_Meetup_Event_Posts {
 	
     }
     
-    function recategorize($post_id, $old_category_id, $new_category_id) {
+    /*function recategorize($post_id, $old_category_id, $new_category_id) {
         //pr($post_id, $old_category_id, $new_category_id);
         $categories = wp_get_post_categories($post_id);
         if ($old_category_id) {
@@ -91,6 +91,14 @@ class WP_Meetup_Event_Posts {
             'ID' => $post_id,
             'post_category' => $categories
         );
+        wp_update_post($new_post);
+    }*/
+    
+    function recategorize($post_id, $category_id) {
+        //pr($post_id, $category_id);
+        $new_post = (array) get_post($post_id);
+        //pr($new_post);
+        $new_post['post_category'] = array($category_id);
         wp_update_post($new_post);
     }
     
