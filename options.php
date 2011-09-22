@@ -12,6 +12,10 @@ class WP_Meetup_Options {
 	    'category' => array('wp_meetup_category', 'events'),
 	    'publish_buffer' => array('wp_meetup_publish_buffer', '2 weeks')
 	);
+        
+        $this->get_all_options();
+        
+        $this->category_id = get_cat_ID($this->options['category']);
     }
     
     function get($option_key) {
@@ -29,11 +33,11 @@ class WP_Meetup_Options {
 	
 	$this->options[$option_key] = get_option($internal_key, $default_value);
 	
-	if ($option_key == 'category') {
+	/*if ($option_key == 'category') {
 	    if (!$this->category_id = get_cat_ID($this->options['category'])) {
 		$this->category_id = wp_insert_term($this->options['category'], 'category');
 	    }
-	}
+	}*/
 	
 	return $this->options[$option_key];
 	
@@ -47,15 +51,12 @@ class WP_Meetup_Options {
 	    $internal_key = $option_value;
 	}
 	
-	if ($option_key == 'publish_buffer') {
-	    
-	}
-	
 	$this->options[$option_key] = $value;
 	
 	if ($option_key == 'category') {
 	    if (!$this->category_id = get_cat_ID($this->options['category'])) {
-		$this->category_id = wp_insert_term($this->options['category'], 'category');
+		$result = wp_insert_term($this->options['category'], 'category');
+                $this->category_id = $result['term_taxonomy_id'];
 	    }
 	}
 	
@@ -66,7 +67,7 @@ class WP_Meetup_Options {
     
     function get_all_options() {
 	foreach ($this->option_map as $option_key => $value) {
-	    $this->get_option($option_key);
+	    $this->get($option_key);
 	}
     }
     

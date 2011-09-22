@@ -78,12 +78,13 @@ class WP_Meetup_Event_Posts {
     }
     
     function recategorize($post_id, $old_category_id, $new_category_id) {
-        
+        //pr($post_id, $old_category_id, $new_category_id);
         $categories = wp_get_post_categories($post_id);
-        foreach ($categories as $key => $category) {
-            if ($category == $old_category_id) unset($categories[$key]);
+        if ($old_category_id) {
+            foreach ($categories as $key => $category) {
+                if ($category == $old_category_id) unset($categories[$key]);
+            }
         }
-        
         $categories[] = $new_category_id;
         
         $new_post = array(

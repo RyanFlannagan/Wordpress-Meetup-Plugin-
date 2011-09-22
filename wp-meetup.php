@@ -93,18 +93,6 @@ class WP_Meetup {
 
         }
 	
-	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->options->get('category')) {
-	    
-	    $old_category_id = $this->options->get('category_id');
-	    $this->options->set('category', $_POST['category']);
-	    $new_category_id = $this->options->get('category_id');
-	    
-	    $this->recategorize_event_posts($old_category_id, $new_category_id);
-	    
-
-	    $this->feedback['message'][] = "Successfullly updated your event category.";
-	}
-        
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = $this->meetup_url_to_group_url_name($_POST['group_url']);
 	    if ($parsed_name != $this->options->get('group_url_name')) {
@@ -118,6 +106,15 @@ class WP_Meetup {
 		}
 	    }
         }
+	
+	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->options->get('category')) {
+	    //pr($this->options->get('category_id'), $this->options->get('category'));
+	    
+	    $this->options->set('category', $_POST['category']);
+	    $this->regenerate_events();
+
+	    $this->feedback['message'][] = "Successfullly updated your event category.";
+	}
 	
 	if (array_key_exists('publish_buffer', $_POST) && $_POST['publish_buffer'] != $this->options->get('publish_buffer')) {
 	    $this->options->set('publish_buffer', $_POST['publish_buffer']);
@@ -143,11 +140,9 @@ class WP_Meetup {
 	}
     }
     
-    function recategorize_event_posts($old_category_id, $new_category_id) {
+    function recategorize_event_posts(/*$old_category_id, $new_category_id*/) {
 	$events = $this->events->get_all();
-	foreach ($events as $event) {
-	    $this->event_posts->recategorize($event->post_id, $old_category_id, $new_category_id);
-	}
+	$this->save_event_posts($events);
     }
     
     function save_event_posts($events) {
@@ -155,7 +150,7 @@ class WP_Meetup {
 	foreach ($events as $event) {
 
 	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'), $this->show_plug);
-	    
+	    //pr($this->options->get('category_id'));
 	    $this->events->update_post_id($event->id, $post_id);
 	}
 	
