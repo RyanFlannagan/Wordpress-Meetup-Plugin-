@@ -4,8 +4,8 @@ class WP_Meetup_Api extends WP_Meetup_Model {
     private $mu_api;
     
     function WP_Meetup_Api() {
-	//parent::WP_Meetup_Model();
-        //include($this->api_dir . "MeetupAPIBase.php");
+	parent::WP_Meetup_Model();
+	$this->import_model('options');
     }
     
     function get_events($start = FALSE, $end = "2m") {

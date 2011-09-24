@@ -34,18 +34,13 @@ wp_enqueue_style( 'wp-meetup' );
 
 class WP_Meetup {
     
-    private $dir;
-    private $admin_page_url;
-    private $feedback = array('error' => array(), 'message' => array());
+    public $dir;
+    public $admin_page_url;
+    public $feedback = array('error' => array(), 'message' => array());
     
-    private $event_posts;
-    public $events;
-    public $options;
-    public $api;
+    public $table_prefix;
     
-    private $table_prefix;
-    
-    private $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
+    public $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
     
     
     function WP_Meetup() {
@@ -56,13 +51,7 @@ class WP_Meetup {
 	global $wpdb;
 	$this->table_prefix = $wpdb->prefix . "wpmeetup_";
 	
-	$this->event_posts = new WP_Meetup_Event_Posts();
-	
-	$this->events = new WP_Meetup_Events();
-	$this->events->table_name = $this->table_prefix . "events";
-	
-	$this->options = new WP_Meetup_Options();
-	$this->api = new WP_Meetup_Api();
+	/**/
 	
     }
     
@@ -97,7 +86,6 @@ class WP_Meetup {
     }
     
     function render($filename, $vars = array()) {
-	//include($this->dir . 'views/' . $filename);
         if (is_file($this->dir . 'views/' . $filename)) {
             ob_start();
 	    extract($vars);
@@ -132,6 +120,11 @@ class WP_Meetup {
 		echo "</pre>";
 	}
 	
+    }
+    
+    function import_model($model) {
+        $class_name = "WP_Meetup_" . ucfirst($model);
+        $this->$model = new $class_name;
     }
     
 }

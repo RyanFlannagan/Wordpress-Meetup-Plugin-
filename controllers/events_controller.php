@@ -1,6 +1,26 @@
 <?php
 class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     
+    function admin_options() {
+        
+        if (!current_user_can('manage_options'))  {
+		wp_die( __('You do not have sufficient permissions to access this page.') );
+	}
+	
+	if (!empty($_POST)) $this->handle_post_data();
+        
+        $data = array();
+        $data['has_api_key'] = $this->options->get('api_key') != FALSE;
+        $data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
+        
+        $data['group'] = $this->api->get_group();
+	$data['events'] = $this->events->get_all_upcoming();
+        
+        echo $this->render("options-page.php", $data);
+        
+    }
+
+    
     function handle_post_data() {
         
         if (array_key_exists('api_key', $_POST) && $_POST['api_key'] != $this->options->get('api_key')) {
@@ -13,7 +33,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = $this->meetup_url_to_group_url_name($_POST['group_url']);
 	    if ($parsed_name != $this->options->get('group_url_name')) {
-		if ($this->get_group($parsed_name)) {
+		if ($this->api->get_group($parsed_name)) {
 		    $this->options->set('group_url_name', $parsed_name);
 		    $this->regenerate_events();
 		    
@@ -24,7 +44,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	    }
         }
 	
-	if (array_key_exists('category', $_POST)/* && $_POST['category'] != $this->options->get('category')*/) {
+	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->options->get('category')) {
 	    //pr($this->options->get('category_id'), $this->options->get('category'));
 	    
 	    $this->options->set('category', $_POST['category']);
@@ -33,7 +53,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	    $this->feedback['message'][] = "Successfullly updated your event category.";
 	}
 	
-	if (array_key_exists('publish_buffer', $_POST) && $_POST['publish_buffer'] != $this->options->get('publish_buffer')) {
+	if (array_key_exists('publish_buffer', $_POST)/* && $_POST['publish_buffer'] != $this->options->get('publish_buffer')*/) {
 	    $this->options->set('publish_buffer', $_POST['publish_buffer']);
 	    
 
@@ -50,28 +70,11 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	
     }
     
-    function admin_options() {
-	
-	if (!empty($_POST)) $this->handle_post_data();
-	
-        if (!current_user_can('manage_options'))  {
-		wp_die( __('You do not have sufficient permissions to access this page.') );
-	}
         
-        $data = array();
-        $data['has_api_key'] = $this->options->get('api_key') != FALSE;
-        $data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
-        
-	$data['events'] = $this->events->get_all_upcoming();
-        
-        echo $this->render("options-page.php", $data);
-        
-    }
-    
     function update_post_statuses() {
 	$events = $this->events->get_all();
 	foreach ($events as $event) {
-	    $this->event_posts->set_date($event->post_id, $event->time, $this->options->get('publish_buffer'));
+	    $this->event_posts->set_date($event->post_id, $event->time, $event->utc_offset, $this->options->get('publish_buffer'));
 	}
     }
     
@@ -94,7 +97,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     }
     
     function update_events() {
-	if ($event_data = $this->get_events()) {
+	if ($event_data = $this->api->get_events()) {
 	    
 	    $this->events->save_all($event_data);
 	    

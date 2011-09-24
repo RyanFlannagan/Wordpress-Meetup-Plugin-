@@ -1,5 +1,5 @@
 <?php
-class WP_Meetup_Options {
+class WP_Meetup_Options extends WP_Meetup_Model {
     
     private $option_map;
     private $options = array();

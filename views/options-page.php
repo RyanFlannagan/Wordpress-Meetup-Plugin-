@@ -56,7 +56,7 @@ $post_status_map = array(
 ?>
 <?php foreach($events as $event): ?>
 <tr>
-    <td><a href="<?php echo $event->event_url; ?>"><?php echo $event->name; ?></a></td>
+    <td><a href="<?php echo get_permalink($event->post_id); ?>"><?php echo $event->name; ?></a></td>
     <td><?php echo date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000); ?></td>
     <td><?php echo date('Y/m/d', strtotime($event->post->post_date)); ?><br /><?php echo $post_status_map[$event->post->post_status];//($event->post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
     <td><?php echo $event->yes_rsvp_count; ?> going</td>
@@ -99,7 +99,7 @@ $post_status_map = array(
 <?php
 $date_select = "<select name=\"publish_buffer\">";
 $options = array(
-    '1 week' => '1 week',
+    '1 week' => '1 weeks',
     '2 weeks' => '2 weeks',
     '1 month' => '1 month'
 );
@@ -133,6 +133,7 @@ $date_select .= "</select>";
     <input type="submit" name="update_events" value="Update Event Posts" class="button-secondary" />
 </p>
 <?php endif; ?>
+
 </form>
 
 </div><!--.wrap-->

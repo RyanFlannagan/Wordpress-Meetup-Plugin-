@@ -1,6 +1,6 @@
 <?php
 
-class WP_Meetup_Event_Posts {
+class WP_Meetup_Event_Posts extends WP_Meetup_Model {
     
     public $wpdb;
     
@@ -9,7 +9,7 @@ class WP_Meetup_Event_Posts {
         $this->wpdb = &$wpdb;
     }
     
-    private function get_post_status($event_adjusted_time, $publish_buffer) {
+    private function get_post_status($event_adjusted_time, $publish_buffer, $set_drafts = TRUE) {
 
         $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
         
@@ -17,7 +17,7 @@ class WP_Meetup_Event_Posts {
             if ($event_adjusted_time >= $today) {
                 return 'publish';
             } else {
-                return 'draft';
+                return $set_drafts ? 'draft' : 'publish';
             }
         } else {
             return'future';
@@ -48,7 +48,7 @@ class WP_Meetup_Event_Posts {
             'post_content' => $description,
             'post_title' => $event->name,
             'post_status' => $post_status,
-            'post_date' => date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event->time)) 
+            'post_date' => date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event_adjusted_time)) 
         );
         
         if ($event->post_id)
@@ -102,20 +102,23 @@ class WP_Meetup_Event_Posts {
         wp_update_post($new_post);
     }
     
-    function set_date($post_id, $event_time, $publish_buffer) {
-        //$this->parent->pr($post_id, $event_time, $publish_buffer);
-        $post_status = strtotime("+" . $publish_buffer) >=  $event_time ? 'publish' : 'future';
-        $post_date = $post_status == 'publish' ? date("Y-m-d H:i:s") : date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event_time));
+    function set_date($post_id, $event_time, $event_utc_offset, $publish_buffer) {
+	//$this->pr($post_id, $event_time, $event_utc_offset, $publish_buffer);
+	$event_adjusted_time = $event_time + $event_utc_offset/1000;
+        $post_status = $this->get_post_status($event_adjusted_time, $publish_buffer, FALSE);
+	
         $new_post = array(
             'post_status' => $post_status,
-            'post_date' => $post_date,
-            'post_date_gmt' => get_gmt_from_date($post_date),
+            'post_date' => date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event_adjusted_time)),
+            'post_date_gmt' => date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event_time)),//get_gmt_from_date($post_date),
             'post_modified' => current_time( 'mysql' ),
             'post_modified_gmt' => current_time( 'mysql', 1 )
         );
-        //$this->parent->pr($new_post);
+        //$this->pr($new_post);
 
         $this->wpdb->update($this->wpdb->posts, $new_post, array('ID' => $post_id), array('%s','%s','%s','%s','%s'), array('%d'));
+	
+	clean_post_cache($post_id);
     }
     
     /*function get_all($id_only = FALSE) {

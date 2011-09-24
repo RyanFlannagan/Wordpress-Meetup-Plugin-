@@ -1,6 +1,6 @@
 <?php
 
-class WP_Meetup_Events {
+class WP_Meetup_Events extends WP_Meetup_Model {
 
     public $table_name;
     private $wpdb;
