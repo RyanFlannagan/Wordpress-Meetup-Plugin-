@@ -6,6 +6,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
     private $wpdb;
     
     function WP_Meetup_Events() {
+        parent::WP_Meetup_Model();
         global $wpdb;
         $this->wpdb = &$wpdb;
     }

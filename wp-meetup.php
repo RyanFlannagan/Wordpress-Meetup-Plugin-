@@ -56,12 +56,14 @@ class WP_Meetup {
     }
     
     function activate() {
-	$this->events->create_table();
+	$events_controller = new WP_Meetup_Events_Controller();
+	$events_controller->events->create_table();
     }
     
     function deactivate() {
-	$this->events->drop_table();
-	$this->options->delete_all();
+	$events_controller = new WP_Meetup_Events_Controller();
+	$events_controller->events->drop_table();
+	$events_controller->options->delete_all();
     }
     
     function group_url_name_to_meetup_url($group_url_name) {
