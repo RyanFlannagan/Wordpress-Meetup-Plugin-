@@ -87,9 +87,9 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     
     function save_event_posts($events) {
 	
-	foreach ($events as $event) {
-
-	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'), $this->show_plug);
+	foreach ($events as $key => $event) {
+            $show_plug = $this->show_plug ? $key % 5 == 0 : FALSE;
+	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'), $show_plug);
 	    //pr($this->options->get('category_id'));
 	    $this->events->update_post_id($event->id, $post_id);
 	}
