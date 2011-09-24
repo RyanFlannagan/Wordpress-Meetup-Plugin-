@@ -62,7 +62,7 @@ if (count($events_by_date) > 0) {
                                 $this->element('span', date("g:i A", $event->time + $event->utc_offset/1000)) . $event->name,
                                 array('href' => get_permalink($event->post->ID))
                             ),
-                            array('class' => $event->status)
+                            array('class' => time() > $event->time + $event->utc_offset/1000 ? 'upcoming' : 'past')
                         );
                     }
                     $td_contents .= $this->element('ul', $ul_contents);
