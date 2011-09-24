@@ -36,12 +36,6 @@ class WP_Meetup_Options extends WP_Meetup_Model {
 	
 	$this->options[$option_key] = get_option($internal_key, $default_value);
 	
-	/*if ($option_key == 'category') {
-	    if (!$this->category_id = get_cat_ID($this->options['category'])) {
-		$this->category_id = wp_insert_term($this->options['category'], 'category');
-	    }
-	}*/
-	
 	return $this->options[$option_key];
 	
     }
