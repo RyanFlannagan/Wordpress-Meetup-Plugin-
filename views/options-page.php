@@ -5,7 +5,7 @@
 ?>
 <h2>WP Meetup Options</h2>
 <p class="description">
-    Options for Meetup.com integration by <a href="http://nuancedmedia.com/">Nuanced Media</a>.
+    Options for Meetup.com integration.
 </p>
 
 
@@ -118,10 +118,21 @@ $date_select .= "</select>";
     <label>Publish event posts <?php echo $date_select; ?> before the event date.</label>
 </p>
 
+
+
 <p>
     <input type="submit" value="Update Options" class="button-primary" />
+</p>
+
+<?php if ($events): ?>
+<h3>Update Events Posts</h3>
+<p>
+    To better manage resources, WP Meetup does not automatically check Meetup.com for changes to events.  If you add new events or change the information for any events, you need to manually update the event posts.  Clicking "Update Event Posts" below will fetch the updates from Meetup.com and regenerate your event posts.
+</p>
+<p>
     <input type="submit" name="update_events" value="Update Event Posts" class="button-secondary" />
 </p>
+<?php endif; ?>
 </form>
 
 </div><!--.wrap-->
