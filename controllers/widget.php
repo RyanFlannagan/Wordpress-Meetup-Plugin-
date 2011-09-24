@@ -4,9 +4,9 @@ class WP_Meetup_Calendar_Widget extends WP_Widget {
     private $core;
     
     function WP_Meetup_Calendar_Widget() {
-        parent::WP_Widget( 'wp_meetup_calendar_widget', $name = 'WP Meetup Calendar Widget', array('description' => 'An awesome widget'));
+        parent::WP_Widget( 'wp_meetup_calendar_widget', $name = 'WP Meetup Calendar Widget', array('description' => 'Displays Meetup.com events in the current month'));
         //$this->events = new WP_Meetup_Events;
-        $this->core = new WP_Meetup(FALSE);
+        $this->core = new WP_Meetup();
     }
     
     function form($instance) {
@@ -28,7 +28,7 @@ class WP_Meetup_Calendar_Widget extends WP_Widget {
         if ( $title )
             echo $before_title . $title . $after_title;
         
-        echo $this->core->get_include_contents('widget_view.php', array('events' => $this->core->events->get_all()));
+        echo $this->core->render('widget_view.php', array('events' => $this->core->events->get_all()));
         
         echo $after_widget;
     }
