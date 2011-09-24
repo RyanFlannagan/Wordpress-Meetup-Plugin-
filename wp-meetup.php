@@ -79,8 +79,10 @@ class WP_Meetup {
     }
 
     function handle_shortcode() {
+	$events_controller = new WP_Meetup_Events_Controller();
+	
 	$data = array();
-	$data['events'] = $this->events->get_all();
+	$data['events'] = $events_controller->events->get_all();
     
 	return $this->render("event-calendar.php", $data);
     }

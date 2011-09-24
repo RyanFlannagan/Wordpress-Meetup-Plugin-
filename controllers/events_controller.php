@@ -53,7 +53,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	    $this->feedback['message'][] = "Successfullly updated your event category.";
 	}
 	
-	if (array_key_exists('publish_buffer', $_POST)/* && $_POST['publish_buffer'] != $this->options->get('publish_buffer')*/) {
+	if (array_key_exists('publish_buffer', $_POST) && $_POST['publish_buffer'] != $this->options->get('publish_buffer')) {
 	    $this->options->set('publish_buffer', $_POST['publish_buffer']);
 	    
 
