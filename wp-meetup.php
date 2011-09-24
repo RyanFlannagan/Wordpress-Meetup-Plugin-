@@ -9,9 +9,9 @@ Author URI: http://nuancedmedia.com/
 */
 
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "meetup_api/MeetupAPIBase.php");
-include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "event-posts.php");
-include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "events.php");
-include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "options.php");
+include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/event-posts.php");
+include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/events.php");
+include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/options.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "widget.php");
 
 $meetup = new WP_Meetup();
