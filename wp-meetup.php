@@ -264,10 +264,11 @@ class WP_Meetup {
     }
     
     function get_include_contents($filename, $vars = array()) {
-        if (is_file($this->dir . $filename)) {
+	//include($this->dir . 'views/' . $filename);
+        if (is_file($this->dir . 'views/' . $filename)) {
             ob_start();
 	    extract($vars);
-            include $this->dir . $filename;
+            include $this->dir . 'views/' . $filename;
             return ob_get_clean();
         }
         return false;
