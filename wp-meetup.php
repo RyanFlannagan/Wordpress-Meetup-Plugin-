@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Meetup
-Plugin URI: http://nuancedmedia.com/
+Plugin URI: http://nuancedmedia.com/wordpress-plugin/wordpress-meetup-plugin/
 Description: Pulls events from Meetup.com onto your blog
 Version: 1.0
 Author: Nuanced Media
@@ -55,7 +55,7 @@ class WP_Meetup {
     
     public $table_prefix;
     
-    public $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
+    public $show_plug = FALSE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
     
     
     function WP_Meetup() {
