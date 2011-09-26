@@ -1,10 +1,10 @@
 === WP Meetup ===
 Contributors: Nuanced Media,cjlarose
-Donate link: http://nuancedmedia.com/wordpress-plugin/wordpress-meetup-plugin/
+Donate link: http://nuancedmedia.com/wordpress-meetup-plugin/
 Tags: meetup,meetup.com
 Requires at least: 3.2
 Tested up to: 3.2.1
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 WP Meetup fetches event information from Meetup.com and creates posts for each event.
 
@@ -13,6 +13,10 @@ WP Meetup fetches event information from Meetup.com and creates posts for each e
 WP Meetup fetches event information from Meetup.com and creates posts for each event.  Additionally, WP Meetup provides an event calendar for displaying upcoming events either on a page or as a widget.
 
 Uses the [Meetup PHP API](https://github.com/wizonesolutions/meetup_api) developed by wizonesolutions.
+
+By using this plugin you the user are "Explicitly" granting permission to embed a link to "Nuanced Media". We are not getting crazy with this. We have setup the plugin to only have a 10% chance to display a link to Nuanced Media's website when you post an event from Meetup. If you really really hate giving us a link. Feel free to take it out of the code; however, when we starving at night because no one knows who we are, we will be thinking of you ;p
+
+For more detailed information visit the plugin homepage at <a href="http://nuancedmedia.com/wordpress-meetup-plugin/">Nuanced Media</a>.
 
 == Installation ==
 
@@ -28,6 +32,11 @@ Uses the [Meetup PHP API](https://github.com/wizonesolutions/meetup_api) develop
 3. Event calendar
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed activation bug involving constructor methods
+* Added FB like button on admin page
+* Edited plugin description
 
 = 1.0 =
 * Initial release

@@ -4,7 +4,8 @@ class WP_Meetup_Event_Posts extends WP_Meetup_Model {
     
     public $wpdb;
     
-    function WP_Meetup_Event_Posts() {
+    function __construct() {
+	parent::__construct();
         global $wpdb;
         $this->wpdb = &$wpdb;
     }
@@ -27,12 +28,12 @@ class WP_Meetup_Event_Posts extends WP_Meetup_Model {
     }
 
     
-    function save_event($event, $publish_buffer, $category_id, $show_plug) {
+    function save_event($event, $publish_buffer, $category_id) {
         
         $event_adjusted_time = $event->time + $event->utc_offset/1000;
         $post_status = ($event->post_id) ? $event->post->post_status : $this->get_post_status($event_adjusted_time, $publish_buffer);
         
-        $description = "<div class=\"wp-meetup-event\">";
+        /*$description = "<div class=\"wp-meetup-event\">";
         $description .= "<a href=\"{$event->event_url}\" class=\"wp-meetup-event-link\">View event on Meetup.com</a>";
         $description .= "<dl class=\"wp-meetup-event-details\">";
         $description .= "<dt>Date</dt><dd>" . date("l, F j, Y, g:i A", $event_adjusted_time) . "</dd>";
@@ -41,20 +42,23 @@ class WP_Meetup_Event_Posts extends WP_Meetup_Model {
         if ($show_plug)
             $description .= "<p class=\"wp-meetup-plug\">Meetup.com integration powered by <a href=\"http://nuancedmedia.com/\">Nuanced Media</a>.</p>";
         $description .= "</div>";
-        $description .= $event->description;
+        $description .= $event->description;*/
 
         $post = array(
             'post_category' => array($category_id),
-            'post_content' => $description,
+            'post_content' => $event->description,
             'post_title' => $event->name,
             'post_status' => $post_status,
             'post_date' => date("Y-m-d H:i:s", strtotime("-" . $publish_buffer, $event_adjusted_time)) 
         );
         
-        if ($event->post_id)
+        if ($event->post_id) {
             $post['ID'] = $event->post_id;
+        }
 
         $post_id = $this->save($post);
+	
+	clean_post_cache($post_id);
 
         return $post_id;
         
