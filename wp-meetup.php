@@ -40,6 +40,7 @@ register_deactivation_hook( __FILE__, array($meetup, 'deactivate') );
 
 add_action( 'widgets_init', create_function( '', 'return register_widget("WP_Meetup_Calendar_Widget");' ) );
 add_action('admin_menu', array($meetup, 'admin_menu'));
+add_filter( 'the_content', array($meetup, 'the_content_filter') );
 
 add_shortcode( 'wp-meetup-calendar', array($meetup, 'handle_shortcode') );
 
@@ -77,6 +78,11 @@ class WP_Meetup {
 	$events_controller = new WP_Meetup_Events_Controller();
 	$events_controller->events->drop_table();
 	$events_controller->options->delete_all();
+    }
+    
+    function the_content_filter($content) {
+	$events_controller = new WP_Meetup_Events_Controller();
+	return $events_controller->the_content_filter($content);
     }
     
     function group_url_name_to_meetup_url($group_url_name) {
