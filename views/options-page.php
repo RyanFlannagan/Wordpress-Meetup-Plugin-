@@ -5,7 +5,7 @@
 ?>
 <h2>WP Meetup Options</h2>
 <p class="description">
-    Options for Meetup.com integration.
+    Options for Meetup.com integration. <a href="http://wordpress.org/extend/plugins/wp-meetup/">Visit plugin page</a>.
 </p>
 
 
@@ -135,6 +135,8 @@ $date_select .= "</select>";
 <?php endif; ?>
 
 </form>
+
+<p>Powered by <a href="http://nuancedmedia.com/">Nuanced Media</a></p>
 
 </div><!--.wrap-->
 

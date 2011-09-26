@@ -14,6 +14,8 @@ WP Meetup fetches event information from Meetup.com and creates posts for each e
 
 Uses the [Meetup PHP API](https://github.com/wizonesolutions/meetup_api) developed by wizonesolutions.
 
+By using this plugin you the user are "Explicitly" granting permission to embed a link to "Nuanced Media". We are not getting crazy with this. We have setup the plugin to only have a 10% chance to display a link to Nuanced Media's website when you post an event from Meetup. If you really really hate giving us a link. Feel free to take it out of the code; however, when we starving at night because no one knows who we are, we will be thinking of you ;p
+
 == Installation ==
 
 1. Upload `wp-meetup.zip` to the `/wp-content/plugins/` directory
