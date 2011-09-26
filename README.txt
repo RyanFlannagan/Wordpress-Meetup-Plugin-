@@ -1,5 +1,5 @@
 === WP Meetup ===
-Contributors: cjlarose
+Contributors: Nuanced Media,cjlarose
 Donate link: http://nuancedmedia.com/wordpress-plugin/wordpress-meetup-plugin/
 Tags: meetup,meetup.com
 Requires at least: 3.2
