@@ -88,8 +88,8 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     function save_event_posts($events) {
 	
 	foreach ($events as $key => $event) {
-            $show_plug = $this->show_plug ? $key % 5 == 0 : FALSE;
-	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'), $show_plug);
+            
+	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'), $this->options->get('category_id'));
 	    //pr($this->options->get('category_id'));
 	    $this->events->update_post_id($event->id, $post_id);
 	}
@@ -119,6 +119,31 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     function regenerate_events() {
 	$this->remove_all_event_posts();
 	$this->update_events();
+    }
+    
+    function the_content_filter($content) {
+	if ($event = $this->events->get_by_post_id($GLOBALS['post']->ID)) {
+	    
+	    //$this->pr($event);
+	    $show_plug = $this->show_plug ? rand(0,4) == 0 : FALSE;
+	    $event_adjusted_time = $event->time + $event->utc_offset/1000;
+	    
+	    $event_meta = "<div class=\"wp-meetup-event\">";
+	    $event_meta .= "<a href=\"{$event->event_url}\" class=\"wp-meetup-event-link\">View event on Meetup.com</a>";
+	    $event_meta .= "<dl class=\"wp-meetup-event-details\">";
+	    $event_meta .= "<dt>Date</dt><dd>" . date("l, F j, Y, g:i A", $event_adjusted_time) . "</dd>";
+	    $event_meta .= ($event->venue) ? "<dt>Venue</dt><dd>" .  $event->venue->name . "</dd>" : "";
+	    $event_meta .= "</dl>";
+	    $event_meta .= "</div>";
+	    
+	    $plug = "";
+	    if ($show_plug)
+		$plug .= "<p class=\"wp-meetup-plug\">Meetup.com integration powered by <a href=\"http://nuancedmedia.com/\">Nuanced Media</a>.</p>";
+	    
+	    return $event_meta . "\n" . $content . "\n" . $plug;
+	
+	}
+	return $content;
     }
     
 }

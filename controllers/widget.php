@@ -3,7 +3,7 @@ class WP_Meetup_Calendar_Widget extends WP_Widget {
     
     private $core;
     
-    function WP_Meetup_Calendar_Widget() {
+    function __construct() {
         parent::WP_Widget( 'wp_meetup_calendar_widget', $name = 'WP Meetup Calendar Widget', array('description' => 'Displays Meetup.com events in the current month'));
         //$this->events = new WP_Meetup_Events;
         $this->core = new WP_Meetup_Events_Controller();

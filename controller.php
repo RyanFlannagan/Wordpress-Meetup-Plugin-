@@ -6,8 +6,8 @@ class WP_Meetup_Controller extends WP_Meetup {
     public $options;
     public $api;
     
-    function WP_Meetup_Controller() {
-        parent::WP_Meetup();
+    function __construct() {
+        parent::__construct();
         $this->event_posts = new WP_Meetup_Event_Posts();
 	
 	$this->events = new WP_Meetup_Events();
