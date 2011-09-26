@@ -136,7 +136,18 @@ $date_select .= "</select>";
 
 </form>
 
-<p>Powered by <a href="http://nuancedmedia.com/">Nuanced Media</a></p>
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<p>Powered by <a href="http://nuancedmedia.com/">Nuanced Media</a> <span class="fb-like" data-href="http://www.facebook.com/NuancedMedia" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></span></p>
 
 </div><!--.wrap-->
 
