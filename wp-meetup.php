@@ -55,7 +55,7 @@ class WP_Meetup {
     
     public $table_prefix;
     
-    public $show_plug = FALSE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
+    public $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
     
     
     function __construct() {
