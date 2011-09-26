@@ -35,6 +35,8 @@ For more detailed information visit the plugin homepage at <a href="http://nuanc
 
 = 1.0.1 =
 * Fixed activation bug involving constructor methods
+* Added FB like button on admin page
+* Edited plugin description
 
 = 1.0 =
 * Initial release
