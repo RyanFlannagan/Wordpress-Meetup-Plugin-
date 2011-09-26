@@ -10,7 +10,7 @@ WP Meetup fetches event information from Meetup.com and creates posts for each e
 
 == Description ==
 
-WP Meetup fetches event information from Meetup.com and creates posts for each event.  Additionally, WP Meetup provides an event calendar for displaying upcoming events either on a page on as a widget.
+WP Meetup fetches event information from Meetup.com and creates posts for each event.  Additionally, WP Meetup provides an event calendar for displaying upcoming events either on a page or as a widget.
 
 Uses the [Meetup PHP API](https://github.com/wizonesolutions/meetup_api) developed by wizonesolutions.
 
