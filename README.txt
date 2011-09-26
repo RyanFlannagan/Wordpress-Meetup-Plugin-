@@ -16,14 +16,10 @@ Uses the [Meetup PHP API](https://github.com/wizonesolutions/meetup_api) develop
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
 1. Upload `wp-meetup.zip` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Visit the options page located at Settings -> WP Meetup and follow the instructions.
-1. To include the event calendar on a page, create a new page and in the content editor, enter `Ò[wp-meetup-calendar]Ó` (without the quotes) where you want the calendar to appear on the page.
+1. To include the event calendar on a page, create a new page and in the content editor, enter `[wp-meetup-calendar]` where you want the calendar to appear on the page.
 
 == Screenshots ==
 
