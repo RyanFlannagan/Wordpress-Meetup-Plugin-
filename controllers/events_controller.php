@@ -124,7 +124,8 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     function the_content_filter($content) {
 	if ($event = $this->events->get_by_post_id($GLOBALS['post']->ID)) {
 	    
-	    $show_plug = $this->show_plug ? TRUE: FALSE;
+	    //$this->pr($event);
+	    $show_plug = $this->show_plug ? rand(0,9) == 0 : FALSE;
 	    $event_adjusted_time = $event->time + $event->utc_offset/1000;
 	    
 	    $event_meta = "<div class=\"wp-meetup-event\">";

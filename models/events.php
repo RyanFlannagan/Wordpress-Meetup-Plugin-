@@ -65,7 +65,12 @@ class WP_Meetup_Events extends WP_Meetup_Model {
     }
     
     function get_by_post_id($post_id) {
-        return $this->wpdb->get_row("SELECT * FROM `{$this->table_name}` WHERE `post_id` = {$post_id}");
+        if ($result = $this->wpdb->get_row("SELECT * FROM `{$this->table_name}` WHERE `post_id` = {$post_id}")) {
+            $result->venue = unserialize($result->venue);
+            return $result;
+        } else {
+            return FALSE;
+        }
     }
     
     function save($event) {
