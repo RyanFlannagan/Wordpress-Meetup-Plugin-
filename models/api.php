@@ -3,8 +3,8 @@ class WP_Meetup_Api extends WP_Meetup_Model {
     
     private $mu_api;
     
-    function WP_Meetup_Api() {
-	parent::WP_Meetup_Model();
+    function __construct() {
+	parent::__construct();
 	$this->import_model('options');
     }
     

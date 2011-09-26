@@ -4,7 +4,7 @@ Donate link: http://nuancedmedia.com/wordpress-plugin/wordpress-meetup-plugin/
 Tags: meetup,meetup.com
 Requires at least: 3.2
 Tested up to: 3.2.1
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 WP Meetup fetches event information from Meetup.com and creates posts for each event.
 
@@ -28,6 +28,9 @@ Uses the [Meetup PHP API](https://github.com/wizonesolutions/meetup_api) develop
 3. Event calendar
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed activation bug involving constructor methods
 
 = 1.0 =
 * Initial release
