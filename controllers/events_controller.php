@@ -2,7 +2,7 @@
 class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     
     function admin_options() {
-        
+
         if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}
@@ -144,6 +144,14 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	
 	}
 	return $content;
+    }
+    
+    function cron_update_events() {
+	if ($this->options->get('api_key') && $this->options->get('group_url_name')) {
+	    $this->update_events();
+	    return TRUE;
+	}
+	return FALSE;
     }
     
 }
