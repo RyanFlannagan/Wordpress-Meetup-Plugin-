@@ -5,7 +5,8 @@ class WP_Meetup_Options extends WP_Meetup_Model {
     private $options = array();
     private $category_id;
     
-    function WP_Meetup_Options() {
+    function __construct() {
+	parent::__construct();
         $this->option_map = array(
 	    'api_key' => 'wp_meetup_api_key',
 	    'group_url_name' => 'wp_meetup_group_url_name',

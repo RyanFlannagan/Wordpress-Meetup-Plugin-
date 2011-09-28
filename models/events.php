@@ -5,8 +5,8 @@ class WP_Meetup_Events extends WP_Meetup_Model {
     public $table_name;
     private $wpdb;
     
-    function WP_Meetup_Events() {
-        parent::WP_Meetup_Model();
+    function __construct() {
+        parent::__construct();
         global $wpdb;
         $this->wpdb = &$wpdb;
     }
@@ -62,6 +62,15 @@ class WP_Meetup_Events extends WP_Meetup_Model {
     
     function get($event_id) {
         return $this->wpdb->get_row("SELECT * FROM `{$this->table_name}` WHERE `id` = {$event_id}");
+    }
+    
+    function get_by_post_id($post_id) {
+        if ($result = $this->wpdb->get_row("SELECT * FROM `{$this->table_name}` WHERE `post_id` = {$post_id}")) {
+            $result->venue = unserialize($result->venue);
+            return $result;
+        } else {
+            return FALSE;
+        }
     }
     
     function save($event) {
