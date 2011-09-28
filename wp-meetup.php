@@ -92,7 +92,7 @@ class WP_Meetup {
 	$events_controller = new WP_Meetup_Events_Controller();
 	$status = $events_controller->cron_update_events();
 	
-	file_put_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'data.txt', date('r') . " " . ($status ? 'success' : 'failure') . "\n", FILE_APPEND);
+	//file_put_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'data.txt', date('r') . " " . ($status ? 'success' : 'failure') . "\n", FILE_APPEND);
     }
     
     function the_content_filter($content) {
