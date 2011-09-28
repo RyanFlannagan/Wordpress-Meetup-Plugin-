@@ -3,7 +3,7 @@
 Plugin Name: WP Meetup
 Plugin URI: http://nuancedmedia.com/wordpress-meetup-plugin/
 Description: Pulls events from Meetup.com onto your blog
-Version: 1.0.1
+Version: 1.0.2
 Author: Nuanced Media
 Author URI: http://nuancedmedia.com/
 
