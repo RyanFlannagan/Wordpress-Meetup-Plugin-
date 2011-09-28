@@ -124,10 +124,10 @@ $date_select .= "</select>";
     <input type="submit" value="Update Options" class="button-primary" />
 </p>
 
-<?php if ($events): ?>
+<?php if ($group): ?>
 <h3>Update Events Posts</h3>
 <p>
-    To better manage resources, WP Meetup does not automatically check Meetup.com for changes to events.  If you add new events or change the information for any events, you need to manually update the event posts.  Clicking "Update Event Posts" below will fetch the updates from Meetup.com and regenerate your event posts.
+    WP Meetup fetches the latest updates to your meetup events every hour and updates your event posts accordingly.  However, if you want recent changes to be reflected immediately, you can force an update by clicking "Update Event Posts."
 </p>
 <p>
     <input type="submit" name="update_events" value="Update Event Posts" class="button-secondary" />
