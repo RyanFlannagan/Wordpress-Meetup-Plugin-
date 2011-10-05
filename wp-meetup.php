@@ -3,7 +3,7 @@
 Plugin Name: WP Meetup
 Plugin URI: http://nuancedmedia.com/wordpress-meetup-plugin/
 Description: Pulls events from Meetup.com onto your blog
-Version: 1.0.1
+Version: 1.0.3
 Author: Nuanced Media
 Author URI: http://nuancedmedia.com/
 
@@ -27,6 +27,7 @@ include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "meetup_api/MeetupAPIBase.php"
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "model.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/event-posts.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/events.php");
+include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/groups.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/options.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/api.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "controller.php");
@@ -56,7 +57,7 @@ class WP_Meetup {
     public $admin_page_url;
     public $feedback = array('error' => array(), 'message' => array());
     
-    public $table_prefix;
+    
     
     public $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
     
@@ -66,14 +67,14 @@ class WP_Meetup {
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
 	$this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
 	
-	global $wpdb;
-	$this->table_prefix = $wpdb->prefix . "wpmeetup_";
-	
     }
     
     function activate() {
-	$events_controller = new WP_Meetup_Events_Controller();
-	$events_controller->events->create_table();
+	$events_model = new WP_Meetup_Events();
+	$events_model->create_table();
+	
+	$groups_model = new WP_Meetup_Groups();
+	$groups_model->create_table();
 	
 	if ( !wp_next_scheduled('update_events_hook') ) {
 	    wp_schedule_event( time(), 'hourly', 'update_events_hook' );
@@ -81,9 +82,12 @@ class WP_Meetup {
     }
     
     function deactivate() {
-	$events_controller = new WP_Meetup_Events_Controller();
-	$events_controller->events->drop_table();
-	$events_controller->options->delete_all();
+	$events_model = new WP_Meetup_Events();
+	$events_model->drop_table();
+	$groups_model = new WP_Meetup_Groups();
+	$groups_model->drop_table();
+	$options_model = new WP_Meetup_Options();
+	$options_model->delete_all();
 	
 	wp_clear_scheduled_hook('update_events_hook');
     }
