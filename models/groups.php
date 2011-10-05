@@ -17,7 +17,7 @@ class WP_Meetup_Groups extends WP_Meetup_Model {
   `group_urlname` tinytext NOT NULL,
   `link` varchar(255) NOT NULL,
   PRIMARY KEY (`id`(16))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
           
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
