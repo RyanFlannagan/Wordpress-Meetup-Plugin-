@@ -13,6 +13,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
     function create_table() {
         $sql = "CREATE TABLE `{$this->table_name}` (
   `id` tinytext NOT NULL,
+  `group_id` int(11) NOT NULL,
   `post_id` int(11) DEFAULT NULL,
   `name` text NOT NULL,
   `description` longtext NOT NULL,
@@ -25,7 +26,8 @@ class WP_Meetup_Events extends WP_Meetup_Model {
   `rsvp_limit` int(11) DEFAULT NULL,
   `yes_rsvp_count` int(11) NOT NULL,
   `maybe_rsvp_count` int(11) NOT NULL,
-  PRIMARY KEY (`id`(16))
+  PRIMARY KEY (`id`(16)),
+  KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
           
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
