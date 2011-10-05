@@ -1,14 +1,13 @@
 <?php
-
 class WP_Meetup_Events extends WP_Meetup_Model {
 
-    public $table_name;
     private $wpdb;
     
     function __construct() {
         parent::__construct();
         global $wpdb;
         $this->wpdb = &$wpdb;
+        $this->table_name = $this->table_prefix . "events";
     }
     
     function create_table() {

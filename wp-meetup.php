@@ -56,7 +56,7 @@ class WP_Meetup {
     public $admin_page_url;
     public $feedback = array('error' => array(), 'message' => array());
     
-    public $table_prefix;
+    
     
     public $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
     
@@ -66,8 +66,7 @@ class WP_Meetup {
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
 	$this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
 	
-	global $wpdb;
-	$this->table_prefix = $wpdb->prefix . "wpmeetup_";
+	
 	
     }
     
