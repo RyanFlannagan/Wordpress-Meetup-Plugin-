@@ -7,7 +7,9 @@
 <p class="description">
     Options for Meetup.com integration. <a href="http://wordpress.org/extend/plugins/wp-meetup/">Visit plugin page</a>.
 </p>
-
+<?php
+//$this->pr($group);
+?>
 
 
 <?php foreach ($this->feedback as $message_type => $messages): ?>
