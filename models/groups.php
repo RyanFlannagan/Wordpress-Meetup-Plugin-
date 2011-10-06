@@ -28,5 +28,27 @@ class WP_Meetup_Groups extends WP_Meetup_Model {
         
         $this->wpdb->query($sql);
     }
+    
+    function get_groups() {
+        $results = $this->wpdb->get_results("SELECT * FROM `{$this->table_name}`", "OBJECT");
+        return $results;
+    }
+    
+    function get_group_url_names() {
+        return $this->wpdb->get_col("SELECT 'group_urlname' FROM `{$this->table_name}`");
+    }
+    
+    function save($group) {
+        
+        $data = (array) $event;
+        
+        if ($row = $this->get($group->id)) {
+            unset($data['id']);
+            $this->wpdb->update($this->table_name, $data, array('id' => $group->id));
+        } else {
+            $this->wpdb->insert($this->table_name, $data);
+        }
+        
+    }
 
 }

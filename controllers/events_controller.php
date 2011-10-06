@@ -1,6 +1,8 @@
 <?php
 class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     
+    protected $uses = array('event_posts', 'events', 'groups', 'api', 'options');
+    
     function admin_options() {
 
         if (!current_user_can('manage_options'))  {
@@ -13,7 +15,8 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
         $data['has_api_key'] = $this->options->get('api_key') != FALSE;
         $data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
         
-        $data['group'] = $this->api->get_group();
+        //$data['group'] = $this->api->get_group();
+	$data['groups'] = $this->groups->get_groups();
 	$data['events'] = $this->events->get_all_upcoming();
         
         echo $this->render("options-page.php", $data);

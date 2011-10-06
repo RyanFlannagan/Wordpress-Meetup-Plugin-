@@ -153,6 +153,14 @@ class WP_Meetup {
 	return $html_string;
     }
     
+    function data_table($headings = array(), $rows = array()) {
+	$data = array(
+	    'headings' => $headings,
+	    'rows' => $rows
+	);
+	return $this->render('data_table.php', $data);
+    }
+    
     function pr($args) {
 	
 	$args = func_get_args();

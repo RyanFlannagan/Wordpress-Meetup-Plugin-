@@ -77,8 +77,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
     function save($event) {
         $data = (array) $event;
         $data['venue'] = $event->venue ? serialize($event->venue) : NULL;
-        //pr($data);
-        //pr($event->id, $this->get($event->id));
+        
         if ($row = $this->get($event->id)) {
             unset($data['id']);
             $this->wpdb->update($this->table_name, $data, array('id' => $event->id));
