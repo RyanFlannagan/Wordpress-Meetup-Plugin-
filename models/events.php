@@ -8,6 +8,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
         global $wpdb;
         $this->wpdb = &$wpdb;
         $this->table_name = $this->table_prefix . "events";
+        $this->import_model('groups');
     }
     
     function create_table() {
@@ -56,6 +57,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
         foreach ($results as $key => $result) {
             $results[$key]->venue = unserialize($result->venue);
             $results[$key]->post = get_post($result->post_id);
+            $results[$key]->group = $this->groups->get($result->group_id);
         }
         //pr($results);
         return $results;

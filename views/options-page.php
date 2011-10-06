@@ -39,14 +39,17 @@ $post_status_map = array(
 );
 
 $headings = array(
+    'Group',
     'Event Name',
     'Event Date',
     'Date Posted',
     'RSVP Count'
 );
 $rows = array();
+//$this->pr($events);
 foreach ($events as $event) {
     $rows[] = array(
+        $event->group->name,
         $this->element('a', $event->name, array('href' => get_permalink($event->post_id))),
         date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000),
         date('Y/m/d', strtotime($event->post->post_date)) . "<br />" . $post_status_map[$event->post->post_status],

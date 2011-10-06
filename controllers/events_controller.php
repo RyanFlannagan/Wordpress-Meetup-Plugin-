@@ -113,7 +113,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     
     function update_events() {
 	$groups = $this->groups->get_url_names();
-	$this->pr($groups);
+	//$this->pr($groups);
 	if ($event_data = $this->api->get_events($groups)) {
 	    //$this->pr($event_data);
 	    $this->events->save_all($event_data);
