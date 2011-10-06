@@ -28,24 +28,6 @@ $this->pr($groups);
 <?php //var_dump($events); ?>
 </pre>
 
-<table class="widefat">
-<thead>
-    <tr>
-        <th>Event Name</th>
-        <th>Event Date</th>
-        <th>Date Posted</th>
-        <th>RSVP Count</th>
-    </tr>
-</thead>
-<tfoot>
-    <tr>
-        <th>Event Name</th>
-        <th>Event Date</th>
-        <th>Date Posted</th>
-        <th>RSVP Count</th>
-    </tr>
-</tfoot>
-<tbody>
 <?php
 $post_status_map = array(
     'publish' => 'Published',
@@ -55,18 +37,25 @@ $post_status_map = array(
     'private' => 'Private',
     'trash' => 'Trashed'
 );
+
+$headings = array(
+    'Event Name',
+    'Event Date',
+    'Date Posted',
+    'RSVP Count'
+);
+$rows = array();
+foreach ($events as $event) {
+    $rows[] = array(
+        $this->element('a', $event->name, array('href' => get_permalink($event->post_id))),
+        date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000),
+        date('Y/m/d', strtotime($event->post->post_date)) . "<br />" . $post_status_map[$event->post->post_status],
+        $event->yes_rsvp_count . " going"
+    );
+}
+echo $this->data_table($headings, $rows);
+
 ?>
-<?php foreach($events as $event): ?>
-<tr>
-    <td><a href="<?php echo get_permalink($event->post_id); ?>"><?php echo $event->name; ?></a></td>
-    <td><?php echo date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000); ?></td>
-    <td><?php echo date('Y/m/d', strtotime($event->post->post_date)); ?><br /><?php echo $post_status_map[$event->post->post_status];//($event->post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
-    <td><?php echo $event->yes_rsvp_count; ?> going</td>
-</tr>
-<?php endforeach; ?>
-   
-</tbody>
-</table>
 
 <?php elseif($group != FALSE): ?>
 
@@ -90,6 +79,19 @@ $post_status_map = array(
 
 
 <h3>Group Information</h3>
+<?php
+if (count($groups) > 0) {
+    
+    $rows = array();
+    foreach ($groups as $group) {
+        $rows[] = array(
+            $group->name,
+            $this->element('a', $group->link, array('href' => $group->link))
+        );
+    }
+    echo $this->data_table(array('Group Name', 'Meetup.com Link'), $rows);
+}
+?>
 <p>
     To pull in your Meetup.com events, provide your group's Meetup.com URL, e.g. "http://www.meetup.com/tucsonhiking"
 </p>

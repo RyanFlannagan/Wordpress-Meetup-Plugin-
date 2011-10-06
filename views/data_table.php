@@ -1,7 +1,10 @@
 <?php
 $heading_cells = "";
+
 foreach ($headings as $heading)
-    $heading_cells += "<th>{$heading}</th>";
+    $heading_cells .= "<th>{$heading}</th>";
+    
+//$this->pr($heading_cells);
 ?>
 <table class="widefat">
 <thead>
