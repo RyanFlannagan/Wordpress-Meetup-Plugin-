@@ -49,7 +49,7 @@ $rows = array();
 //$this->pr($events);
 foreach ($events as $event) {
     $rows[] = array(
-        $event->group->name,
+        $this->element('a', $event->group->name, array('href' => $event->group->link)),
         $this->element('a', $event->name, array('href' => get_permalink($event->post_id))),
         date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000),
         date('Y/m/d', strtotime($event->post->post_date)) . "<br />" . $post_status_map[$event->post->post_status],
@@ -89,10 +89,11 @@ if (count($groups) > 0) :
     foreach ($groups as $group) {
         $rows[] = array(
             $group->name,
-            $this->element('a', $group->link, array('href' => $group->link))
+            $this->element('a', $group->link, array('href' => $group->link)),
+            $this->element('a', 'Remove Group', array('href' => $this->admin_page_url . '&remove_group_id=' . $group->id))
         );
     }
-    echo $this->data_table(array('Group Name', 'Meetup.com Link'), $rows);
+    echo $this->data_table(array('Group Name', 'Meetup.com Link', 'Remove Group'), $rows);
 ?>
 <p>
     <label>New Group URL</label>
