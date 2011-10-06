@@ -93,6 +93,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
         foreach ($events as $key => $event) {
             $event_data = array(
                 'id' => $event->id,
+                'group_id' => $event->group->id,
                 'name' => $event->name,
                 'description' => $event->description,
                 'visibility' => $event->visibility,

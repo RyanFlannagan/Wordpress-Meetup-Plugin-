@@ -16,15 +16,18 @@ class WP_Meetup_Api extends WP_Meetup_Model {
 	    $start = number_format($start, 0, '.', '');
 	}
 
-	if (count($group_url_names) == 0 || !$this->options->get('api_key'))
+	if (count($group_url_names) == 0 || !$this->options->get('api_key')) {
+	    $this->pr($group_url_names);
 	    return FALSE;
+	}
 	
         $this->mu_api = new MeetupAPIBase($this->options->get('api_key'), '2/events');
 	
 	$events = array();
-	foreach ($group_url_names as $url_names) {
+	
+	foreach ($group_url_names as $url_name) {
 	    $this->mu_api->setQuery(array(
-		'group_urlname' => $this->options->get('group_url_name'),
+		'group_urlname' => $url_name,
 		'status' => 'upcoming,past',
 		'time' => $start . "," . $end
 	    ));
@@ -32,7 +35,7 @@ class WP_Meetup_Api extends WP_Meetup_Model {
 	    set_time_limit(0);
 	    $this->mu_api->setPageSize(200);
 	    $response = $this->mu_api->getResponse();
-	    
+	    //$this->pr($response->results);
 	    $events = array_merge($events, $response->results); 
 	}
         

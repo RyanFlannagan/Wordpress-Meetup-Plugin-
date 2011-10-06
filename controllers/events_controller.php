@@ -61,7 +61,6 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
         }
 	
 	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->options->get('category')) {
-	    //pr($this->options->get('category_id'), $this->options->get('category'));
 	    
 	    $this->options->set('category', $_POST['category']);
 	    $this->recategorize_event_posts();
@@ -114,13 +113,14 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     
     function update_events() {
 	$groups = $this->groups->get_url_names();
+	$this->pr($groups);
 	if ($event_data = $this->api->get_events($groups)) {
-	    pr($event_data);
-	    /*$this->events->save_all($event_data);
+	    //$this->pr($event_data);
+	    $this->events->save_all($event_data);
 	    
 	    $events = $this->events->get_all();
 	    
-	    $this->save_event_posts($events);*/
+	    $this->save_event_posts($events);
 	    
 	}
     }

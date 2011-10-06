@@ -39,7 +39,7 @@ class WP_Meetup_Groups extends WP_Meetup_Model {
     }
     
     function get_url_names() {
-        return $this->wpdb->get_col("SELECT `group_urlname` FROM `{$this->table_name}`");
+        return $this->wpdb->get_col("SELECT `url_name` FROM `{$this->table_name}`");
     }
     
     function save($group) {
