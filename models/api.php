@@ -8,28 +8,35 @@ class WP_Meetup_Api extends WP_Meetup_Model {
 	$this->import_model('options');
     }
     
-    function get_events($start = FALSE, $end = "2m") {
+    function get_events($group_url_names = array(), $start = FALSE, $end = "2m") {
+	
 	if ($start === FALSE) {
 	    $start = mktime(0, 0, 0, date('n'), 1, date('Y'));
 	    $start *= 1000;
 	    $start = number_format($start, 0, '.', '');
 	}
 
-	if (!$this->options->get('group_url_name') || !$this->options->get('api_key'))
+	if (count($group_url_names) == 0 || !$this->options->get('api_key'))
 	    return FALSE;
 	
         $this->mu_api = new MeetupAPIBase($this->options->get('api_key'), '2/events');
-        $this->mu_api->setQuery(array(
-            'group_urlname' => $this->options->get('group_url_name'),
-	    'status' => 'upcoming,past',
-            'time' => $start . "," . $end
-        ));
-
-        set_time_limit(0);
-        $this->mu_api->setPageSize(200);
-        $response = $this->mu_api->getResponse();
+	
+	$events = array();
+	foreach ($group_url_names as $url_names) {
+	    $this->mu_api->setQuery(array(
+		'group_urlname' => $this->options->get('group_url_name'),
+		'status' => 'upcoming,past',
+		'time' => $start . "," . $end
+	    ));
+    
+	    set_time_limit(0);
+	    $this->mu_api->setPageSize(200);
+	    $response = $this->mu_api->getResponse();
+	    
+	    $events = array_merge($events, $response->results); 
+	}
         
-        return $response->results;
+        return $events;
         
     }
     

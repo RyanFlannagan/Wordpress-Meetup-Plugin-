@@ -57,7 +57,7 @@ echo $this->data_table($headings, $rows);
 
 ?>
 
-<?php elseif($group != FALSE): ?>
+<?php elseif(count($groups) > 0): ?>
 
 <p>There are no available events listed for this group.</p>
 
@@ -80,7 +80,7 @@ echo $this->data_table($headings, $rows);
 
 <h3>Group Information</h3>
 <?php
-if (count($groups) > 0) {
+if (count($groups) > 0) :
     
     $rows = array();
     foreach ($groups as $group) {
@@ -90,15 +90,23 @@ if (count($groups) > 0) {
         );
     }
     echo $this->data_table(array('Group Name', 'Meetup.com Link'), $rows);
-}
 ?>
+<p>
+    <label>New Group URL</label>
+    <input type="text" name="group_url" size="30" value="http://www.meetup.com/" />
+</p>
+<?php else: ?>
 <p>
     To pull in your Meetup.com events, provide your group's Meetup.com URL, e.g. "http://www.meetup.com/tucsonhiking"
 </p>
 <p>
     <label>Meetup.com Group URL: </label>
-    <input type="text" name="group_url" size="30" value="<?php echo $group_url; ?>" />
+    <input type="text" name="group_url" size="30" value="http://www.meetup.com/" />
 </p>
+<?php endif; ?>
+
+
+
 
 <?php
 $date_select = "<select name=\"publish_buffer\">";
@@ -128,7 +136,7 @@ $date_select .= "</select>";
     <input type="submit" value="Update Options" class="button-primary" />
 </p>
 
-<?php if ($group): ?>
+<?php if (count($groups) > 0): ?>
 <h3>Update Events Posts</h3>
 <p>
     WP Meetup fetches the latest updates to your meetup events every hour and updates your event posts accordingly.  However, if you want recent changes to be reflected immediately, you can force an update by clicking "Update Event Posts."

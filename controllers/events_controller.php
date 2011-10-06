@@ -13,10 +13,8 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
         
         $data = array();
         $data['has_api_key'] = $this->options->get('api_key') != FALSE;
-        $data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
-        
-        //$data['group'] = $this->api->get_group();
-	$data['groups'] = $this->groups->get_groups();
+        //$data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
+	$data['groups'] = $this->groups->get_all();
 	$data['events'] = $this->events->get_all_upcoming();
         
         echo $this->render("options-page.php", $data);
@@ -35,14 +33,29 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = $this->meetup_url_to_group_url_name($_POST['group_url']);
-	    if ($parsed_name != $this->options->get('group_url_name')) {
-		if ($this->api->get_group($parsed_name)) {
-		    $this->options->set('group_url_name', $parsed_name);
-		    $this->regenerate_events();
+	    if ($parsed_name != "") {
+		
+		if (!in_array($parsed_name, $this->groups->get_url_names())) {
 		    
-		    $this->feedback['message'][] = "Successfullly added your group";
+		    if ($group_data = $this->api->get_group($parsed_name)) {
+			
+			$group = array(
+			    'id' => $group_data->id,
+			    'name' => $group_data->name,
+			    'url_name' => $group_data->group_urlname,
+			    'link' => $group_data->link
+			);
+			
+			$this->groups->save($group);
+			$this->regenerate_events();
+			
+			$this->feedback['message'][] = "Successfullly added your group";
+		    } else {
+			$this->feedback['error'][] = "The Group URL you entered isn't valid.";
+		    }
+		    
 		} else {
-		    $this->feedback['error'][] = "The Group URL you entered isn't valid.";
+		    $this->feedback['error'][] = "The group URL you entered refers to a group you've already added.";
 		}
 	    }
         }
@@ -100,13 +113,14 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     }
     
     function update_events() {
-	if ($event_data = $this->api->get_events()) {
-	    
-	    $this->events->save_all($event_data);
+	$groups = $this->groups->get_url_names();
+	if ($event_data = $this->api->get_events($groups)) {
+	    pr($event_data);
+	    /*$this->events->save_all($event_data);
 	    
 	    $events = $this->events->get_all();
-	    //pr($events);
-	    $this->save_event_posts($events);
+	    
+	    $this->save_event_posts($events);*/
 	    
 	}
     }
