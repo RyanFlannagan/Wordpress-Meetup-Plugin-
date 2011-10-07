@@ -3,7 +3,7 @@
 Plugin Name: WP Meetup
 Plugin URI: http://nuancedmedia.com/wordpress-meetup-plugin/
 Description: Pulls events from Meetup.com onto your blog
-Version: 1.0.3
+Version: 1.1
 Author: Nuanced Media
 Author URI: http://nuancedmedia.com/
 
@@ -50,18 +50,15 @@ wp_enqueue_style( 'wp-meetup' );
 
 add_action('update_events_hook', array($meetup, 'cron_update'));
 
+add_action('admin_init', array($meetup, 'admin_init'));
 
 class WP_Meetup {
     
     public $dir;
     public $admin_page_url;
     public $feedback = array('error' => array(), 'message' => array());
-    
-    
-    
     public $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
-    
-    
+
     function __construct() {
 	
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
@@ -92,6 +89,10 @@ class WP_Meetup {
 	wp_clear_scheduled_hook('update_events_hook');
     }
     
+    function admin_init() {
+	wp_register_script('options-page', plugins_url('/js/options-page.js', __FILE__), array('jquery'));
+    }
+    
     function cron_update() {
 	$events_controller = new WP_Meetup_Events_Controller();
 	$status = $events_controller->cron_update_events();
@@ -115,7 +116,12 @@ class WP_Meetup {
     
     function admin_menu() {
 	$events_controller = new WP_Meetup_Events_Controller();
-        add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($events_controller, 'admin_options'));
+        $page = add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($events_controller, 'admin_options'));
+	add_action('admin_print_styles-' . $page, array($this, 'admin_styles'));
+    }
+    
+    function admin_styles() {
+	wp_enqueue_script('options-page');
     }
 
     function handle_shortcode() {
@@ -153,10 +159,11 @@ class WP_Meetup {
 	return $html_string;
     }
     
-    function data_table($headings = array(), $rows = array()) {
+    function data_table($headings = array(), $rows = array(), $table_attributes = array()) {
 	$data = array(
 	    'headings' => $headings,
-	    'rows' => $rows
+	    'rows' => $rows,
+	    'table_attributes' => $table_attributes
 	);
 	return $this->render('data_table.php', $data);
     }

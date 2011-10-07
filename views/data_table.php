@@ -4,30 +4,28 @@ $heading_cells = "";
 foreach ($headings as $heading)
     $heading_cells .= "<th>{$heading}</th>";
     
-//$this->pr($heading_cells);
-?>
-<table class="widefat">
+$table_contents = "
 <thead>
     <tr>
-        <?php echo $heading_cells; ?>
+        {$heading_cells}
     </tr>
 </thead>
 <tfoot>
     <tr>
-        <?php echo $heading_cells; ?>
+        {$heading_cells}
     </tr>
 </tfoot>
-<tbody>
+<tbody>";
 
-<?php foreach($rows as $row): ?>
-<tr>
-    <?php
+foreach($rows as $row) {
+    $row_contents = "";
     foreach ($row as $cell) {
-        echo $this->element('td', $cell);
+        $row_contents .= $this->element('td', $cell);
     }
-    ?>
-</tr>
-<?php endforeach; ?>
-   
-</tbody>
-</table>
+    $table_contents .= $this->element('tr', $row_contents);
+}
+
+$table_contents .= "</tbody>";
+
+echo $this->element('table', $table_contents, array_merge(array('class' => 'widefat'), $table_attributes));
+?>

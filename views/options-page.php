@@ -1,3 +1,4 @@
+
 <div class="wrap">
 <?php
     //$this->pr($events);
@@ -93,7 +94,7 @@ if (count($groups) > 0) :
             $this->element('a', 'Remove Group', array('href' => $this->admin_page_url . '&remove_group_id=' . $group->id))
         );
     }
-    echo $this->data_table(array('Group Name', 'Meetup.com Link', 'Remove Group'), $rows);
+    echo $this->data_table(array('Group Name', 'Meetup.com Link', 'Remove Group'), $rows, array('id' => 'groups-table'));
 ?>
 <p>
     <label>New Group URL</label>
