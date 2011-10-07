@@ -1,6 +1,8 @@
 <?php
 class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     
+    protected $uses = array('event_posts', 'events', 'groups', 'api', 'options');
+    
     function admin_options() {
 
         if (!current_user_can('manage_options'))  {
@@ -8,12 +10,15 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	}
 	
 	if (!empty($_POST)) $this->handle_post_data();
+	
+	if (!empty($_GET) && array_key_exists('remove_group_id', $_GET)) {
+	    $this->groups->remove($_GET['remove_group_id']);
+	    //$this->events->remove_by_group_id($_GET['remove_group_id']);
+	}
         
         $data = array();
         $data['has_api_key'] = $this->options->get('api_key') != FALSE;
-        $data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
-        
-        $data['group'] = $this->api->get_group();
+	$data['groups'] = $this->groups->get_all();
 	$data['events'] = $this->events->get_all_upcoming();
         
         echo $this->render("options-page.php", $data);
@@ -32,20 +37,34 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	
         if (array_key_exists('group_url', $_POST)) {
             $parsed_name = $this->meetup_url_to_group_url_name($_POST['group_url']);
-	    if ($parsed_name != $this->options->get('group_url_name')) {
-		if ($this->api->get_group($parsed_name)) {
-		    $this->options->set('group_url_name', $parsed_name);
-		    $this->regenerate_events();
+	    if ($parsed_name != "") {
+		
+		if (!in_array($parsed_name, $this->groups->get_url_names())) {
 		    
-		    $this->feedback['message'][] = "Successfullly added your group";
+		    if ($group_data = $this->api->get_group($parsed_name)) {
+			
+			$group = array(
+			    'id' => $group_data->id,
+			    'name' => $group_data->name,
+			    'url_name' => $group_data->group_urlname,
+			    'link' => $group_data->link
+			);
+			
+			$this->groups->save($group);
+			$this->regenerate_events();
+			
+			$this->feedback['message'][] = "Successfullly added your group";
+		    } else {
+			$this->feedback['error'][] = "The Group URL you entered isn't valid.";
+		    }
+		    
 		} else {
-		    $this->feedback['error'][] = "The Group URL you entered isn't valid.";
+		    $this->feedback['error'][] = "The group URL you entered refers to a group you've already added.";
 		}
 	    }
         }
 	
 	if (array_key_exists('category', $_POST) && $_POST['category'] != $this->options->get('category')) {
-	    //pr($this->options->get('category_id'), $this->options->get('category'));
 	    
 	    $this->options->set('category', $_POST['category']);
 	    $this->recategorize_event_posts();
@@ -97,12 +116,14 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     }
     
     function update_events() {
-	if ($event_data = $this->api->get_events()) {
-	    
+	$groups = $this->groups->get_url_names();
+	//$this->pr($groups);
+	if ($event_data = $this->api->get_events($groups)) {
+	    //$this->pr($event_data);
 	    $this->events->save_all($event_data);
 	    
 	    $events = $this->events->get_all();
-	    //pr($events);
+	    
 	    $this->save_event_posts($events);
 	    
 	}
