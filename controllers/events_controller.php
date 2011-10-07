@@ -10,10 +10,14 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	}
 	
 	if (!empty($_POST)) $this->handle_post_data();
+	
+	if (!empty($_GET) && array_key_exists('remove_group_id', $_GET)) {
+	    $this->groups->remove($_GET['remove_group_id']);
+	    //$this->events->remove_by_group_id($_GET['remove_group_id']);
+	}
         
         $data = array();
         $data['has_api_key'] = $this->options->get('api_key') != FALSE;
-        //$data['group_url'] = $this->group_url_name_to_meetup_url($this->options->get('group_url_name'));
 	$data['groups'] = $this->groups->get_all();
 	$data['events'] = $this->events->get_all_upcoming();
         

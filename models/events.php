@@ -137,6 +137,8 @@ class WP_Meetup_Events extends WP_Meetup_Model {
         $this->wpdb->query($sql);
     }
     
-    
+    function remove_by_group_id($group_id) {
+        $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->table_name} WHERE `group_id` = %d", array($group_id)));
+    }
 
 }
