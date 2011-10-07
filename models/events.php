@@ -1,19 +1,20 @@
 <?php
-
 class WP_Meetup_Events extends WP_Meetup_Model {
 
-    public $table_name;
     private $wpdb;
     
     function __construct() {
         parent::__construct();
         global $wpdb;
         $this->wpdb = &$wpdb;
+        $this->table_name = $this->table_prefix . "events";
+        $this->import_model('groups');
     }
     
     function create_table() {
         $sql = "CREATE TABLE `{$this->table_name}` (
   `id` tinytext NOT NULL,
+  `group_id` int(11) NOT NULL,
   `post_id` int(11) DEFAULT NULL,
   `name` text NOT NULL,
   `description` longtext NOT NULL,
@@ -26,7 +27,8 @@ class WP_Meetup_Events extends WP_Meetup_Model {
   `rsvp_limit` int(11) DEFAULT NULL,
   `yes_rsvp_count` int(11) NOT NULL,
   `maybe_rsvp_count` int(11) NOT NULL,
-  PRIMARY KEY (`id`(16))
+  PRIMARY KEY (`id`(16)),
+  KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
           
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -55,6 +57,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
         foreach ($results as $key => $result) {
             $results[$key]->venue = unserialize($result->venue);
             $results[$key]->post = get_post($result->post_id);
+            $results[$key]->group = $this->groups->get($result->group_id);
         }
         //pr($results);
         return $results;
@@ -76,8 +79,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
     function save($event) {
         $data = (array) $event;
         $data['venue'] = $event->venue ? serialize($event->venue) : NULL;
-        //pr($data);
-        //pr($event->id, $this->get($event->id));
+        
         if ($row = $this->get($event->id)) {
             unset($data['id']);
             $this->wpdb->update($this->table_name, $data, array('id' => $event->id));
@@ -93,6 +95,7 @@ class WP_Meetup_Events extends WP_Meetup_Model {
         foreach ($events as $key => $event) {
             $event_data = array(
                 'id' => $event->id,
+                'group_id' => $event->group->id,
                 'name' => $event->name,
                 'description' => $event->description,
                 'visibility' => $event->visibility,
@@ -134,6 +137,8 @@ class WP_Meetup_Events extends WP_Meetup_Model {
         $this->wpdb->query($sql);
     }
     
-    
+    function remove_by_group_id($group_id) {
+        $this->wpdb->query($this->wpdb->prepare("DELETE FROM {$this->table_name} WHERE `group_id` = %d", array($group_id)));
+    }
 
 }

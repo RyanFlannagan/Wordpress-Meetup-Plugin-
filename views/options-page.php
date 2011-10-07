@@ -1,3 +1,4 @@
+
 <div class="wrap">
 <?php
     //$this->pr($events);
@@ -7,7 +8,9 @@
 <p class="description">
     Options for Meetup.com integration. <a href="http://wordpress.org/extend/plugins/wp-meetup/">Visit plugin page</a>.
 </p>
-
+<?php
+//$this->pr($groups);
+?>
 
 
 <?php foreach ($this->feedback as $message_type => $messages): ?>
@@ -26,24 +29,6 @@
 <?php //var_dump($events); ?>
 </pre>
 
-<table class="widefat">
-<thead>
-    <tr>
-        <th>Event Name</th>
-        <th>Event Date</th>
-        <th>Date Posted</th>
-        <th>RSVP Count</th>
-    </tr>
-</thead>
-<tfoot>
-    <tr>
-        <th>Event Name</th>
-        <th>Event Date</th>
-        <th>Date Posted</th>
-        <th>RSVP Count</th>
-    </tr>
-</tfoot>
-<tbody>
 <?php
 $post_status_map = array(
     'publish' => 'Published',
@@ -53,20 +38,30 @@ $post_status_map = array(
     'private' => 'Private',
     'trash' => 'Trashed'
 );
-?>
-<?php foreach($events as $event): ?>
-<tr>
-    <td><a href="<?php echo get_permalink($event->post_id); ?>"><?php echo $event->name; ?></a></td>
-    <td><?php echo date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000); ?></td>
-    <td><?php echo date('Y/m/d', strtotime($event->post->post_date)); ?><br /><?php echo $post_status_map[$event->post->post_status];//($event->post->post_status == 'future') ? "Scheduled" : "Published"; ?></td>
-    <td><?php echo $event->yes_rsvp_count; ?> going</td>
-</tr>
-<?php endforeach; ?>
-   
-</tbody>
-</table>
 
-<?php elseif($group != FALSE): ?>
+$headings = array(
+    'Group',
+    'Event Name',
+    'Event Date',
+    'Date Posted',
+    'RSVP Count'
+);
+$rows = array();
+//$this->pr($events);
+foreach ($events as $event) {
+    $rows[] = array(
+        $this->element('a', $event->group->name, array('href' => $event->group->link)),
+        $this->element('a', $event->name, array('href' => get_permalink($event->post_id))),
+        date('D M j, Y, g:i A', $event->time + $event->utc_offset/1000),
+        date('Y/m/d', strtotime($event->post->post_date)) . "<br />" . $post_status_map[$event->post->post_status],
+        $event->yes_rsvp_count . " going"
+    );
+}
+echo $this->data_table($headings, $rows);
+
+?>
+
+<?php elseif(count($groups) > 0): ?>
 
 <p>There are no available events listed for this group.</p>
 
@@ -88,13 +83,35 @@ $post_status_map = array(
 
 
 <h3>Group Information</h3>
+<?php
+if (count($groups) > 0) :
+    
+    $rows = array();
+    foreach ($groups as $group) {
+        $rows[] = array(
+            $group->name,
+            $this->element('a', $group->link, array('href' => $group->link)),
+            $this->element('a', 'Remove Group', array('href' => $this->admin_page_url . '&remove_group_id=' . $group->id))
+        );
+    }
+    echo $this->data_table(array('Group Name', 'Meetup.com Link', 'Remove Group'), $rows, array('id' => 'groups-table'));
+?>
+<p>
+    <label>New Group URL</label>
+    <input type="text" name="group_url" size="30" value="http://www.meetup.com/" />
+</p>
+<?php else: ?>
 <p>
     To pull in your Meetup.com events, provide your group's Meetup.com URL, e.g. "http://www.meetup.com/tucsonhiking"
 </p>
 <p>
     <label>Meetup.com Group URL: </label>
-    <input type="text" name="group_url" size="30" value="<?php echo $group_url; ?>" />
+    <input type="text" name="group_url" size="30" value="http://www.meetup.com/" />
 </p>
+<?php endif; ?>
+
+
+
 
 <?php
 $date_select = "<select name=\"publish_buffer\">";
@@ -124,7 +141,7 @@ $date_select .= "</select>";
     <input type="submit" value="Update Options" class="button-primary" />
 </p>
 
-<?php if ($group): ?>
+<?php if (count($groups) > 0): ?>
 <h3>Update Events Posts</h3>
 <p>
     WP Meetup fetches the latest updates to your meetup events every hour and updates your event posts accordingly.  However, if you want recent changes to be reflected immediately, you can force an update by clicking "Update Event Posts."

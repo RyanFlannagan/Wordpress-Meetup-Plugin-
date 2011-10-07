@@ -3,7 +3,7 @@
 Plugin Name: WP Meetup
 Plugin URI: http://nuancedmedia.com/wordpress-meetup-plugin/
 Description: Pulls events from Meetup.com onto your blog
-Version: 1.0.2
+Version: 1.1
 Author: Nuanced Media
 Author URI: http://nuancedmedia.com/
 
@@ -27,6 +27,7 @@ include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "meetup_api/MeetupAPIBase.php"
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "model.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/event-posts.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/events.php");
+include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/groups.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/options.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "models/api.php");
 include(dirname(__FILE__) . DIRECTORY_SEPARATOR . "controller.php");
@@ -49,31 +50,28 @@ wp_enqueue_style( 'wp-meetup' );
 
 add_action('update_events_hook', array($meetup, 'cron_update'));
 
+add_action('admin_init', array($meetup, 'admin_init'));
 
 class WP_Meetup {
     
     public $dir;
     public $admin_page_url;
     public $feedback = array('error' => array(), 'message' => array());
-    
-    public $table_prefix;
-    
     public $show_plug = TRUE; // set to FALSE to remove "Meetup.com integration powered by..." from posts
-    
-    
+
     function __construct() {
 	
         $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
 	$this->admin_page_url = admin_url("options-general.php?page=wp_meetup");
 	
-	global $wpdb;
-	$this->table_prefix = $wpdb->prefix . "wpmeetup_";
-	
     }
     
     function activate() {
-	$events_controller = new WP_Meetup_Events_Controller();
-	$events_controller->events->create_table();
+	$events_model = new WP_Meetup_Events();
+	$events_model->create_table();
+	
+	$groups_model = new WP_Meetup_Groups();
+	$groups_model->create_table();
 	
 	if ( !wp_next_scheduled('update_events_hook') ) {
 	    wp_schedule_event( time(), 'hourly', 'update_events_hook' );
@@ -81,11 +79,18 @@ class WP_Meetup {
     }
     
     function deactivate() {
-	$events_controller = new WP_Meetup_Events_Controller();
-	$events_controller->events->drop_table();
-	$events_controller->options->delete_all();
+	$events_model = new WP_Meetup_Events();
+	$events_model->drop_table();
+	$groups_model = new WP_Meetup_Groups();
+	$groups_model->drop_table();
+	$options_model = new WP_Meetup_Options();
+	$options_model->delete_all();
 	
 	wp_clear_scheduled_hook('update_events_hook');
+    }
+    
+    function admin_init() {
+	wp_register_script('options-page', plugins_url('/js/options-page.js', __FILE__), array('jquery'));
     }
     
     function cron_update() {
@@ -111,7 +116,12 @@ class WP_Meetup {
     
     function admin_menu() {
 	$events_controller = new WP_Meetup_Events_Controller();
-        add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($events_controller, 'admin_options'));
+        $page = add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($events_controller, 'admin_options'));
+	add_action('admin_print_styles-' . $page, array($this, 'admin_styles'));
+    }
+    
+    function admin_styles() {
+	wp_enqueue_script('options-page');
     }
 
     function handle_shortcode() {
@@ -147,6 +157,15 @@ class WP_Meetup {
 	$html_string .= $content;
 	$html_string .= "</$tag_name>";
 	return $html_string;
+    }
+    
+    function data_table($headings = array(), $rows = array(), $table_attributes = array()) {
+	$data = array(
+	    'headings' => $headings,
+	    'rows' => $rows,
+	    'table_attributes' => $table_attributes
+	);
+	return $this->render('data_table.php', $data);
     }
     
     function pr($args) {
