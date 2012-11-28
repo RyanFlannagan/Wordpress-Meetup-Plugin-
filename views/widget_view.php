@@ -3,7 +3,7 @@
 //print_r($events);
 $events_by_date = array();
 foreach ($events as $event) {
-    $event_time = $event->time + $event->utc_offset/1000;
+    $event_time = $event->time + $event->utc_offset;
     $event_date = mktime(0, 0, 0, date('n', $event_time), date('j', $event_time), date('Y', $event_time));
     $date_key = date('Y-m-d', $event_date);
     
@@ -52,29 +52,19 @@ if (count($events_by_date) > 0) {
             if ($current_date == $today)
                 $td_classes[] = 'today';
             
-            $td_contents = "";
+            $td_contents = date('j', $current_date);
             $date_key = date('Y-m-d', $current_date);
             if (array_key_exists($date_key, $events_by_date)) {
-                /*$ul_contents = "";
-                foreach ($events_by_date[$date_key] as $event) {
-                    $ul_contents .= $this->element('li',
-                        $this->element('a',
-                            $this->element('span', date("g:i A", $event->time + $event->utc_offset/1000)) . $event->name,
-                            array('href' => get_permalink($event->post->ID))
-                        ),
-                        array('class' => $event->status)
-                    );
-                }
-                $td_contents .= $this->element('ul', $ul_contents);*/
-                $event = $events_by_date[$date_key][0];
-                $td_contents = $this->element('a', date('j', $current_date), array(
-                    'href' => get_permalink($event->post->ID),
-                    'title' => $event->name
-                ));
                 
-            } else {
-                $td_contents = date('j', $current_date);
-            }
+                $event = $events_by_date[$date_key][0];
+                //$this->pr($event->post);
+                if ($event->post->post_status == 'publish') {
+                    $td_contents = $this->element('a', date('j', $current_date), array(
+                        'href' =>  get_permalink($event->post->ID),
+                        'title' => $event->name
+                    ));
+                } 
+            } 
             
             if (date('n', $current_date) == $current_month) {
                 $tr_contents .= $this->element('td', $td_contents, array('class' => implode(' ', $td_classes)));
@@ -89,8 +79,10 @@ if (count($events_by_date) > 0) {
     }
     
     $table_caption = $this->element('caption', date('F Y', $first_of_the_month));
-    $div_contents .= $this->element('table', $table_caption . $this->element('thead', $thead_contents) . $this->element('tbody', $tbody_contents), array('cellpadding' => 0, 'cellspacing' => 0));
-    
+    $div_contents .= $this->element('table', $table_caption . $this->element('thead', $thead_contents, array('style' => 'background-color: ' . $header_color)) . $this->element('tbody', $tbody_contents), array('cellpadding' => 0, 'cellspacing' => 0));
+    if (!empty($linked_page)) {
+        $div_contents .= $this->element('a', 'View all events', array('href' => get_permalink($linked_page)));
+    }
     echo $this->element('div', $div_contents, array('id' => 'wp-meetup-widget-calendar'));
 } else {
     echo $this->element('p', "No events listed.");

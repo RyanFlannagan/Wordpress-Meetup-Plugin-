@@ -17,7 +17,6 @@ class WP_Meetup_Api extends WP_Meetup_Model {
 	}
 
 	if (count($group_url_names) == 0 || !$this->options->get('api_key')) {
-	    $this->pr($group_url_names);
 	    return FALSE;
 	}
 	
@@ -34,6 +33,7 @@ class WP_Meetup_Api extends WP_Meetup_Model {
     
 	    set_time_limit(0);
 	    $this->mu_api->setPageSize(200);
+	    $this->mu_api->setFormat('json-alt');
 	    $response = $this->mu_api->getResponse();
 	    //$this->pr($response->results);
 	    $events = array_merge($events, $response->results); 
@@ -43,27 +43,42 @@ class WP_Meetup_Api extends WP_Meetup_Model {
         
     }
     
-    function get_group($group_url_name = FALSE, $api_key = FALSE) {
-        
-	if (!$group_url_name)
-	    $group_url_name = $this->options->get('group_url_name');
-	    
-	if (!$api_key)
-	    $api_key = $this->options->get('api_key');
+    /**
+     * the API call getResponse sometimes generates a bunch of PHP notices, so
+     * this function temporarily disables error reporting.  It's ugly, I know.
+     */
+    function get_group($group_url_name) {
+        error_reporting(0);
+	$api_key = $this->options->get('api_key');
 	    
 	if (!$api_key || !$group_url_name)
 	    return FALSE;
-	    
-	//$this->pr($group_url_name, $api_key);
 	
         $this->mu_api = new MeetupAPIBase($api_key, 'groups');
         $this->mu_api->setQuery( array('group_urlname' => $group_url_name) ); 
         set_time_limit(0);
         $this->mu_api->setPageSize(200);
+	$this->mu_api->setFormat('json-alt');
+	
         $group_info = $this->mu_api->getResponse();
 	
         return (count($group_info->results) > 0) ? $group_info->results[0] : FALSE;
         
     }
+	
+	function is_valid_key($api_key) {
+        	error_reporting(0);
+		$test_group_url = 'tucsonhiking';
+		
+		$this->mu_api = new MeetupAPIBase($api_key, 'groups');
+		$this->mu_api->setQuery( array('group_urlname' => $test_group_url) ); 
+		set_time_limit(0);
+		$this->mu_api->setPageSize(200);
+		$this->mu_api->setFormat('json-alt');
+		
+		$response = $this->mu_api->getResponse();
+//		$this->pr($response);
+		return !property_exists($response, 'problem');
+	}
     
 }

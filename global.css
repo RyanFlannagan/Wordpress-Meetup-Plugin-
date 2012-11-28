@@ -1,3 +1,7 @@
+/**
+ * Event post meta box
+ */
+
 .wp-meetup-event {
     background: rgba(230, 230, 230, .7);
     border-radius: 5px;
@@ -18,6 +22,9 @@
     color: #fff;
     margin: 0 0 1.625em;
 }
+.wp-meetup-event a.wp-meetup-event-link-small {
+	vertical-align: top;
+}
 .wp-meetup-event dl.wp-meetup-event-details {
     margin: 0;
 }
@@ -28,12 +35,25 @@
     margin: 0 0 1.625em;
 }
 
+/**
+ * Plug at the end of posts
+ */
 .wp-meetup-plug {
     font-size: .65em;
     color: #666;
     text-align: right;
 }
 
+/**
+ * Shortcode page calendar
+ */
+ul#wp-meetup-groups {
+    list-style: none;
+    margin: 0 0 1.625em 0;
+}
+ul#wp-meetup-groups li a {
+    padding-left: 5px;
+}
 #wp-meetup-calendar table {
     background: #fff;
 }
@@ -85,6 +105,9 @@
     font-weight: bold;
 }
 
+/**
+ * Widget calendar
+ */
 #wp-meetup-widget-calendar {    
 }
 #wp-meetup-widget-calendar table {
@@ -103,4 +126,103 @@
 }
 #wp-meetup-widget-calendar th, #wp-meetup-widget-calendar td {
     padding: 3px;
+}
+
+/**
+ * Upcoming events widget
+ */
+#wp-meetup-upcoming-events-list {
+    list-style: none;
+}
+#wp-meetup-upcoming-events-list li {
+    margin-bottom: 1.5em;
+    margin-left: 55px;
+    clear: both;
+}
+#wp-meetup-upcoming-events-list li div {
+    margin-left: -55px;
+    float: left;
+    background: #e51937;
+    color: #fff;
+    width: 40px;
+    margin-bottom: 1.5em;
+    border-radius: 5px;
+    padding: 3px;
+    box-shadow: 0 0 5px 1px rgba(0,0,0,.3);
+}
+#wp-meetup-upcoming-events-list li div span {
+    display: block;
+    text-align: center;
+}
+#wp-meetup-upcoming-events-list li div span.month {
+    font-weight: bold;
+}
+#wp-meetup-upcoming-events-list li div span.date {
+    font-size: 2em;
+    line-height: 1em;
+}
+
+/**
+ * Admin area
+ */
+#wp-meetup-container {
+    margin-left: 380px;
+}
+#wp-meetup-container.sidebar-right {
+    margin-right: 380px;
+    margin-left: 0px;
+}
+#wp-meetup-container > div {
+    
+}
+#wp-meetup-container div.sidebar {
+    float: left;
+    margin-left: -380px;
+    width: 320px;
+}
+#wp-meetup-container.sidebar-right div.sidebar {
+    float: right;
+    margin-left: 0px;
+    margin-right: -380px;
+}
+
+/* Page: WP Meetup */
+.publish_options_info {
+    color: #666;
+}
+#wp-meetup-social {
+    
+}
+#wp-meetup-social .fb-like {
+    margin-top: 3px;
+}
+#wp-meetup-social > div {
+    float: left;   
+}
+
+/* Page: Events */
+/* Page: Groupo */
+/* Page: Dev support */
+#wp-meetup-support-us {
+    padding: 20px;
+}
+.wrap.bad-person #wp-meetup-support-us {
+    background: #c33;
+    
+    color: #fff;
+}
+.wp-meetup-caption {
+    border: 1px solid #ccc;
+    padding: 20px;
+    -moz-box-shadow: 2px 2px 2px #ccc;
+    -webkit-box-shadow: 2px 2px 2px #ccc;
+    box-shadow: 2px 2px 2px #ccc;
+    background: #fff;
+}
+.wp-meetup-caption img {
+    width: 268px;
+}
+.wp-meetup-caption p {
+    margin-bottom: 0;
+    color: #000;
 }
