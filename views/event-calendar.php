@@ -28,16 +28,15 @@ unset($events);
 //pr($events_by_date);
 
 if (count($events_by_date) > 0) {
-    $number_of_months = 2;
     $today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
     
     $div_contents = "";
-    for ($m = 0; $m < $number_of_months; $m++) {
+    for ($m = 0; $m < $number_of_months; $m++) { // 'm' counts the months, 'i' counts the weeks, 'j' counts the days in that week
         $current_month = date('n') + $m;
         $first_of_the_month = mktime(0, 0, 0, $current_month, 1, date('Y'));
-        $date_start = mktime(0, 0, 0, $current_month, 1-date('w', $first_of_the_month), date('Y'));
-        $end_date = mktime(0, 0, 0, $current_month+1, -1, date('Y'));
-        
+        $date_start = mktime(0, 0, 0, $current_month, 1-date('w', $first_of_the_month), date('Y')); // monday of the first week of the month (which may not lie in the same month)
+        $end_date = mktime(0, 0, 0, $current_month+1, -1, date('Y')); // last day of the current month
+		
         $theadrow_contents = '';
         foreach (array('Su', 'M', 'T', 'W', 'Th', 'F', 'Sa') as $day) {
             $theadrow_contents .= $this->element('th', $day);
@@ -55,7 +54,7 @@ if (count($events_by_date) > 0) {
                 $current_date = strtotime('+' . (($i*7)+$j) . 'days', $date_start);
                 
                 $td_classes = array();
-                if (date('w', $current_date) == 0 || date('w', $current_date) == 6) {
+                if (date('w', $current_date) == 0 || date('w', $current_date) == 6) { // sunday ('w'=0) and saturday ('w'=6) are the weekend
                     $td_classes[] = 'weekend';
                 }
                 
@@ -90,9 +89,11 @@ if (count($events_by_date) > 0) {
                         }
                     }
                     $td_contents .= $this->element('ul', $ul_contents);
-                }
+                } else {
+					$td_contents .= $this->element('ul',$this->element('li',$this->element('span',"&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp ")));
+				}
                 
-                if (date('n', $current_date) == date('n', $first_of_the_month)) {
+                if ((date('n', $current_date) % 12) == ($current_month % 12)) { // evaluating mod 12 fixes bug of months in later years all being 'out of range'
                     $tr_contents .= $this->element('td', $td_contents, array('class' => implode(' ', $td_classes)));
                 } else {
                     $tr_contents .= $this->element('td', "", array('class' => 'out-of-range'));
@@ -105,6 +106,7 @@ if (count($events_by_date) > 0) {
         }
         
         $div_contents .= $this->element('h2', date('F Y', $first_of_the_month));
+		// if current_month is this month (given by date('n')) then table_class is 'current-month'; otherwise the table_class is 'next-month'
         $table_class = $current_month - date('n') == 0 ? "current-month" : "next-month";
         $div_contents .= $this->element('table', $this->element('thead', $thead_contents) . $this->element('tbody', $tbody_contents), array('class' => $table_class,'cellpadding' => 0, 'cellspacing' => 0));
          

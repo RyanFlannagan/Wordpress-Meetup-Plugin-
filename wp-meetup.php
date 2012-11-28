@@ -161,12 +161,17 @@ class WP_Meetup {
 	wp_enqueue_script('options-page');
     }
 
-    function handle_shortcode() {
+    function handle_shortcode($atts) {
 	$events_controller = new WP_Meetup_Events_Controller();
 	
+	extract(shortcode_atts(array('number_of_months' => '2'), $atts));
+	
+	$number_of_months = intval($number_of_months);
+	if ($number_of_months < 1) { $number_of_months = 1; }
 	$data = array();
 	$data['events'] = $events_controller->events->get_all();
 	$data['groups'] = $events_controller->groups->get_all();
+	$data['number_of_months'] = $number_of_months;
     
 	return $this->render("event-calendar.php", $data);
     }
