@@ -338,7 +338,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 					break;
 			}
 			$plug .= $plug_alt_text;
-			$plug .= "\"Nuanced Media</a>.</p>";
+			$plug .= "\">Nuanced Media</a>.</p>";
 			//$plug .= date('w',$event->time) . "<p class=\"wp-meetup-plug\">Meetup.com integration powered by <a href=\"http://nuancedmedia.com/\" title=\"Website design, Online Marketing and Business Consulting\">Nuanced Media</a>.</p>";
 		}
 	    

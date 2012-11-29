@@ -7,7 +7,7 @@ class WP_Meetup_Options extends WP_Meetup_Model {
 	'publish_buffer' => '2 weeks',
 	//'show_plug' => TRUE,
 	//'show_plug_probability' => 1.0,
-	'include_home_page' => TRUE,
+	'include_home_page' => FALSE,
 	'display_event_info' => TRUE,
 	'use_rsvp_button' => FALSE,
 	'button_script_url' => FALSE,
