@@ -1,4 +1,3 @@
-<div class="wrap <?php echo ($show_plug) ? 'good-person' : 'bad-person' ?>">
 <h2>WP Meetup Groups</h2>
 <?php //$this->pr($GLOBALS); ?>
 <?php $this->display_feedback(); ?>

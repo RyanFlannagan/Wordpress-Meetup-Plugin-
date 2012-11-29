@@ -3,11 +3,11 @@
 Plugin Name: WP Meetup
 Plugin URI: http://nuancedmedia.com/wordpress-meetup-plugin/
 Description: Pulls events from Meetup.com onto your blog
-Version: 1.4.4
+Version: 1.4.5
 Author: Nuanced Media
 Author URI: http://nuancedmedia.com/
 
-Copyright 2011  Nuanced Media
+Copyright 2012  Nuanced Media
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -70,7 +70,7 @@ class WP_Meetup {
 
     function __construct() {
 	
-        $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
+    $this->dir = WP_PLUGIN_DIR . "/wp-meetup/";
 	$this->plugin_url = plugins_url('/', __FILE__);
 	$this->admin_page_url = admin_url("admin.php?page=wp_meetup");
 	$this->events_page_url = admin_url("admin.php?page=wp_meetup_events");
@@ -149,7 +149,7 @@ class WP_Meetup {
 	    $pages[] = add_submenu_page('wp_meetup', 'WP Meetup Groups', 'Groups', 'manage_options', 'wp_meetup_groups', array($events_controller, 'show_groups'));
 	    $pages[] = add_submenu_page('wp_meetup', 'WP Meetup Events', 'Events', 'manage_options', 'wp_meetup_events', array($events_controller, 'show_upcoming'));
 	    $pages[] = add_submenu_page('wp_meetup', 'WP Meetup RSVP Button', 'RSVP Button', 'manage_options', 'wp_meetup_rsvp_button', array($events_controller, 'rsvp_button'));
-	    $pages[] = add_submenu_page('wp_meetup', 'WP Meetup Developer Support', 'Dev Support', 'manage_options', 'wp_meetup_dev_support', array($events_controller, 'dev_support'));
+	    //$pages[] = add_submenu_page('wp_meetup', 'WP Meetup Developer Support', 'Dev Support', 'manage_options', 'wp_meetup_dev_support', array($events_controller, 'dev_support'));
 	}
 	//$page = add_options_page('WP Meetup Options', 'WP Meetup', 'manage_options', 'wp_meetup', array($events_controller, 'admin_options'));
 	//$this->pr($pages);
@@ -248,8 +248,8 @@ class WP_Meetup {
     function admin_notices() {
 	$this->import_model('options');
 	if ($this->options->get('api_key')) {
-	    if (array_key_exists('show_plug', $_POST) ? !$_POST['show_plug'] : !$this->options->get('show_plug')) {
-		echo "<div class=\"error\"><p>Please update your settings for <a href=\"" . $this->dev_support_page_url . "\">WP Meetup</a> to support the developers.</p></div>";
+	    if (array_key_exists('show_nm_link', $_POST) ? !$_POST['show_nm_link'] : !$this->options->get('show_nm_link')) {
+		echo "<div class=\"error\"><p>Please update your settings for <a href=\"" . $this->admin_page_url . "\">WP Meetup</a> to support the developers.</p></div>";
 	    }
 	} else {
 	    if (!(array_key_exists('page', $_GET) && $_GET['page'] == 'wp_meetup')) {
@@ -277,7 +277,5 @@ class WP_Meetup {
 	}
 	return $query;
     }
-
 }
-
 ?>

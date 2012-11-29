@@ -66,7 +66,7 @@ if (count($events_by_date) > 0) {
                 } 
             } 
             
-            if (date('n', $current_date) == $current_month) {
+            if ((date('n', $current_date) % 12) == ($current_month % 12)) {
                 $tr_contents .= $this->element('td', $td_contents, array('class' => implode(' ', $td_classes)));
             } else {
                 $tr_contents .= $this->element('td', "", array('class' => 'out-of-range'));
@@ -87,5 +87,4 @@ if (count($events_by_date) > 0) {
 } else {
     echo $this->element('p', "No events listed.");
 }
-
 ?>

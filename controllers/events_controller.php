@@ -52,8 +52,8 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	$data['events'] = $this->events->get_all_upcoming();
 	//$data['category'] = $this->options->get_category();
 	
-	$data['show_plug'] = $this->options->get('show_plug');
-	$data['show_plug_probability'] = $this->options->get('show_plug_probability');
+	$data['show_nm_link'] = $this->options->get('show_nm_link');
+	//$data['show_plug_probability'] = $this->options->get('show_plug_probability');
 	$data['include_home_page'] = $this->options->get('include_home_page');
         $data['display_event_info'] = $this->options->get('display_event_info');
         echo $this->render("options-page.php", $data);
@@ -101,7 +101,7 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 		echo $this->render("admin-rsvp-button.php");
 	}
     
-    function dev_support() {
+    /*function dev_support() {
 	if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}
@@ -112,8 +112,8 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	$data['show_plug'] = $this->options->get('show_plug');
 	$data['show_plug_probability'] = $this->options->get('show_plug_probability');
 	
-	echo $this->render("admin-dev-support.php", $data);
-    }
+	//echo $this->render("admin-dev-support.php", $data);
+    }*/
 
     
     function handle_post_data() {
@@ -177,25 +177,26 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	    $this->feedback['message'][] = "Successfully updated your publishing buffer.";
 	}
 	
-	if (array_key_exists('show_plug', $_POST)) {
-	    $show_plug_option = $_POST['show_plug'] == 'true';
-	    if ($show_plug_option != $this->options->get('show_plug')) {
-		$this->options->set('show_plug', $show_plug_option);
+	/*if (array_key_exists('show_nm_link', $_POST)) {
+	    $show_plug_option = $_POST['show_nm_link'] == 'true';
+	    if ($show_plug_option != $this->options->get('show_nm_link')) {
+		$this->options->set('show_nm_link', $show_plug_option);
 		$this->feedback['message'][] = "Successfully updated your support for the developers.";
 	    }
-	}
+	}*/
 	
-	if (array_key_exists('show_plug_probability', $_POST)
+	/*if (array_key_exists('show_plug_probability', $_POST)
 	    && $_POST['show_plug_probability'] != $this->options->get('show_plug_probability')) {
 	    //$this->pr($this->options->get('show_plug_probability'), $_POST['show_plug_probability']);
 	    $this->options->set('show_plug_probability', $_POST['show_plug_probability']);
 	    $this->feedback['message'][] = "Successfully updated the probability of Nuanced Media's link appearing on your event posts";
-	}
+	}*/
 	
 	if (array_key_exists('update_publish_options', $_POST)) {
 	    if (!array_key_exists('publish_options', $_POST))
 		$_POST['publish_options'] = array();
-	    foreach (array('include_home_page', 'display_event_info') as $option_key) {
+	    //foreach (array('include_home_page', 'display_event_info') as $option_key) {
+		foreach (array('include_home_page', 'display_event_info', 'show_nm_link') as $option_key) {
 		$this->options->set($option_key, in_array($option_key, $_POST['publish_options']));
 	    }
 	    $this->feedback['message'][] = "Successfully updated your publishing options";
@@ -253,7 +254,6 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     function save_event_posts($events) {
 	
 	foreach ($events as $key => $event) {
-            
 	    $post_id = $this->event_posts->save_event($event, $this->options->get('publish_buffer'));
 	    //pr($this->options->get('category_id'));
 	    $this->events->update_post_id($event->id, $post_id);
@@ -291,7 +291,8 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
     function the_content_filter($content) {
 	if (($event = $this->events->get_by_post_id($GLOBALS['post']->ID)) && $this->options->get('display_event_info')) {
 	    //$this->pr($event);
-	    $show_plug = $this->options->get('show_plug') ? rand(0,100)/100 <= $this->options->get('show_plug_probability') : FALSE;
+	    //$show_plug = $this->options->get('show_plug') ? rand(0,100)/100 <= $this->options->get('show_plug_probability') : FALSE;
+		$show_nm_link = $this->options->get('show_nm_link');
 	    $event_adjusted_time = $event->time + $event->utc_offset;
 	    //$this->pr($event);
 	    $event_meta = "<div class=\"wp-meetup-event\">";
@@ -310,8 +311,36 @@ class WP_Meetup_Events_Controller extends WP_Meetup_Controller {
 	    $event_meta .= "</div>";
 	    
 	    $plug = "";
-	    if ($show_plug)
-		$plug .= "<p class=\"wp-meetup-plug\">Meetup.com integration powered by <a href=\"http://nuancedmedia.com/\" title=\"Website design, Online Marketing and Business Consulting\">Nuanced Media</a>.</p>";
+		$plug_alt_text = "";
+	    if ($show_nm_link) {
+			$plug .= "<p class=\"wp-meetup-plug\">Meetup.com integration powered by <a href=\"http://nuancedmedia.com/\" title=\"";
+			switch (date('w',$event->time)) {
+				case 0:
+					$plug_alt_text = "marketing tucson";
+					break;
+				case 1:
+					$plug_alt_text = "tucson marketing";
+					break;
+				case 2:
+					$plug_alt_text = "tucson advertising";
+					break;
+				case 3:
+					$plug_alt_text = "tucson media";
+					break;
+				case 4:
+					$plug_alt_text = "tucson website design";
+					break;
+				case 5:
+					$plug_alt_text = "seo tucson";
+					break;
+				case 6:
+					$plug_alt_text = "internet marketing tucson";
+					break;
+			}
+			$plug .= $plug_alt_text;
+			$plug .= "\"Nuanced Media</a>.</p>";
+			//$plug .= date('w',$event->time) . "<p class=\"wp-meetup-plug\">Meetup.com integration powered by <a href=\"http://nuancedmedia.com/\" title=\"Website design, Online Marketing and Business Consulting\">Nuanced Media</a>.</p>";
+		}
 	    
 	    return $event_meta . "\n" . $content . "\n" . $plug;
 	

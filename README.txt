@@ -19,9 +19,10 @@ For more detailed information visit the plugin homepage at [Nuanced Media](http:
 == Installation ==
 
 1. Upload `wp-meetup.zip` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Visit the options page located at Settings -> WP Meetup and follow the instructions.
-1. To include the event calendar on a page, create a new page and in the content editor, enter `[wp-meetup-calendar]` where you want the calendar to appear on the page.
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Visit the options page located at Settings -> WP Meetup and follow the instructions.
+4. To include the event calendar on a page, create a new page and in the content editor, enter `[wp-meetup-calendar]` where you want the calendar to appear on the page.
+5. To include a variable number of months on the event calender, use shortcode, e.g. `[wp-meetup-calender number_of_months='4']` by default the calender displays two months (the current, and the next).
 
 **Important: If you're upgrading from a version prior to 1.2, make sure to disable the plugin and re-enable it.**
 

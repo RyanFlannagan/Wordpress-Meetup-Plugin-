@@ -1,4 +1,3 @@
-<div class="wrap <?php echo ($show_plug) ? 'good-person' : 'bad-person' ?>">
 <h2>WP Meetup Events</h2>
 <?php $this->display_feedback(); ?>
 <?php echo $this->open_form(); ?>

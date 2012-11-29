@@ -14,7 +14,7 @@
     
     <div class="sidebar">
         
-        <a href="http://nuancedmedia.com/" title="Website design, Online Marketing and Business Consulting"><img src="<?php echo $this->plugin_url . "images/logo.jpg"; ?>" alt="Nuanced Media" /></a>
+        <a href="http://nuancedmedia.com/" title="Website design, Online Marketing and Business Consulting"><img src="<?php echo $this->plugin_url . "images/NM_logo_banner.png"; ?>" alt="Nuanced Media" /></a>
         
         <div id="fb-root"></div>
         <script>(function(d, s, id) {
@@ -28,7 +28,8 @@
             <div class="fb-like" data-href="https://www.facebook.com/NuancedMedia" data-send="false" data-layout="button_count" data-width="100" data-show-faces="true"></div>
                 
                 <!-- Place this tag where you want the +1 button to render -->
-            <g:plusone annotation="inline" width="216" href="http://nuancedmedia.com/"></g:plusone>
+            <!--<g:plusone annotation="inline" width="216" href="http://nuancedmedia.com/"></g:plusone>-->
+			<g:plusone annotation="inline" width="216" href="https://plus.google.com/105681796007125615548/about"></g:plusone>
         </div>
         <!-- Place this render call where appropriate -->
         <script type="text/javascript">
@@ -113,6 +114,15 @@
                     'checked' => $display_event_info
                 )) . "Display event information (date, group, and link) on event posts"
             ));
+			
+			echo $this->element('p', $this->element('label',
+                $this->element('input', NULL, array(
+                    'type' => 'checkbox',
+                    'name' => 'publish_options[]',
+                    'value' => 'show_nm_link',
+                    'checked' => $show_nm_link
+                )) . "Support the developers and keep this plugin free. By checking this box, a small link attributing our work will be placed at the bottom of pages which use this plugin."
+            ));			
             ?>
             
             <?php
