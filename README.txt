@@ -4,7 +4,7 @@ Donate link: http://nuancedmedia.com/wordpress-meetup-plugin/
 Tags: meetup,meetup.com
 Requires at least: 3.2
 Tested up to: 3.3
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 
 WP Meetup fetches event information from Meetup.com and creates posts for each event.
 
@@ -33,6 +33,12 @@ For more detailed information visit the plugin homepage at [Nuanced Media](http:
 3. Event calendar
 
 == Changelog ==
+
+= 1.4.5 =
+* Added ability to display any number of months in the calendar display. Use e.g. [wp-meetup-calendar number_of_months='3']. This defaults to '2' if no number is specified.
+* Cleaned up the way the calendar is displayed and created to accommodate the above.
+* Altered the way the developer support works.
+* Updated images to show off our awesome new logo!
 
 = 1.4.4 =
 * Added API key validation check
